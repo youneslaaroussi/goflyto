@@ -2,7 +2,7 @@ import { Box, Button, Container, Typography } from '@mui/material';
 import AirplanemodeInactiveIcon from '@mui/icons-material/AirplanemodeInactive';
 import WifiOffIcon from '@mui/icons-material/WifiOff';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutlined';
 import CloudOffIcon from '@mui/icons-material/CloudOff';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import TimerOffIcon from '@mui/icons-material/TimerOff';
@@ -48,11 +48,11 @@ export function ErrorScreen({ error, onRetry, onBack }: Props) {
             <Icon sx={{ fontSize: 38, color }} />
           </Box>
 
-          <Typography variant="h6" fontWeight={700} mb={1}>
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
             {error.message}
           </Typography>
 
-          <Typography fontSize={14} color="text.secondary" mb={4} lineHeight={1.7}>
+          <Typography color="text.secondary" sx={{ fontSize: 14, mb: 4, lineHeight: 1.7 }}>
             {error.hint}
           </Typography>
 

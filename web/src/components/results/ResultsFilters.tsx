@@ -31,7 +31,7 @@ export function ResultsFilters({ filter, sortBy, onFilterChange, onSortChange }:
       </ToggleButtonGroup>
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Typography fontSize={13} color="text.secondary">Sort:</Typography>
+        <Typography color="text.secondary" sx={{ fontSize: 13 }}>Sort:</Typography>
         <ToggleButtonGroup
           value={sortBy} exclusive size="small"
           onChange={(_, v) => v && onSortChange(v)}

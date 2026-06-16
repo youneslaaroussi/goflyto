@@ -12,7 +12,7 @@ export function ResultsSummary({ result }: Props) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, flexWrap: 'wrap', gap: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-        <Typography fontWeight={700} fontSize={16}>{offers.length} flights found</Typography>
+        <Typography sx={{ fontWeight: 700, fontSize: 16 }}>{offers.length} flights found</Typography>
         {constraints.origin && constraints.destination && (
           <Chip
             label={`${constraints.origin} → ${constraints.destination}`}
@@ -28,9 +28,9 @@ export function ResultsSummary({ result }: Props) {
             size="small" color="secondary" variant="outlined"
           />
         )}
-        <Typography fontWeight={500} color="text.secondary" fontSize={14}>
+        <Typography color="text.secondary" sx={{ fontWeight: 500, fontSize: 14 }}>
           From{' '}
-          <Box component="span" fontWeight={700} color="primary.main" fontSize={18}>
+          <Box component="span" sx={{ fontWeight: 700, color: 'primary.main', fontSize: 18 }}>
             ${cheapest.toFixed(0)}
           </Box>
         </Typography>

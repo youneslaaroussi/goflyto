@@ -19,14 +19,14 @@ export function FlightLeg({ Icon, label, route, departure, stops }: Props) {
     <Box sx={{ flex: 1, minWidth: 160 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
         <Icon sx={{ fontSize: 13, color: 'text.disabled' }} />
-        <Typography variant="caption" color="text.disabled" fontWeight={700}
-          textTransform="uppercase" letterSpacing="0.07em">
+        <Typography variant="caption" color="text.disabled"
+          sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
           {label}
         </Typography>
       </Box>
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Typography fontSize={22} fontWeight={700} letterSpacing="-0.5px">{origin}</Typography>
+        <Typography sx={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.5px' }}>{origin}</Typography>
 
         <Box sx={{ flex: 1, textAlign: 'center', px: 0.5 }}>
           <Box sx={{ position: 'relative', height: 2, bgcolor: 'divider' }}>
@@ -38,16 +38,16 @@ export function FlightLeg({ Icon, label, route, departure, stops }: Props) {
               }} />
             ))}
           </Box>
-          <Typography fontSize={10} color="text.secondary" mt={0.4} fontWeight={500}>
+          <Typography color="text.secondary" sx={{ fontSize: 10, mt: 0.4, fontWeight: 500 }}>
             {stops === 0 ? 'Nonstop' : `${stops} stop${stops > 1 ? 's' : ''}`}
           </Typography>
         </Box>
 
-        <Typography fontSize={22} fontWeight={700} letterSpacing="-0.5px">{dest}</Typography>
+        <Typography sx={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.5px' }}>{dest}</Typography>
       </Box>
 
       {departure && (
-        <Typography fontSize={12} color="text.secondary" mt={0.3}>{formatDate(departure)}</Typography>
+        <Typography color="text.secondary" sx={{ fontSize: 12, mt: 0.3 }}>{formatDate(departure)}</Typography>
       )}
     </Box>
   );

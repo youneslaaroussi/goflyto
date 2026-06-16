@@ -67,13 +67,13 @@ export function FlightCard({ offer, rank, cheapest }: Props) {
 
             {/* Price */}
             <Box sx={{ textAlign: 'right', flexShrink: 0, minWidth: 90 }}>
-              <Typography fontSize={28} fontWeight={700} lineHeight={1} letterSpacing="-0.5px">
+              <Typography sx={{ fontSize: 28, fontWeight: 700, lineHeight: 1, letterSpacing: '-0.5px' }}>
                 ${offer.price_usd.toFixed(0)}
               </Typography>
               {diff > 0 && (
-                <Typography fontSize={11} color="text.disabled">+${diff.toFixed(0)}</Typography>
+                <Typography color="text.disabled" sx={{ fontSize: 11 }}>+${diff.toFixed(0)}</Typography>
               )}
-              <Typography fontSize={12} color="text.secondary" mt={0.5} noWrap>
+              <Typography color="text.secondary" noWrap sx={{ fontSize: 12, mt: 0.5 }}>
                 {offer.airlines[0]}
               </Typography>
               {isNonstop && (
@@ -98,17 +98,19 @@ export function FlightCard({ offer, rank, cheapest }: Props) {
               { label: 'Airlines', val: offer.airlines.join(', '), sub: '' },
               { label: 'Offer ID', val: offer.offer_id, mono: true, sub: '' },
             ].map(({ label, val, sub, mono }) => (
-              <Grid item xs={12} sm={6} key={label}>
-                <Typography variant="caption" color="text.disabled" fontWeight={700}
-                  textTransform="uppercase" letterSpacing="0.06em">
+              <Grid size={{ xs: 12, sm: 6 }} key={label}>
+                <Typography variant="caption" color="text.disabled"
+                  sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                   {label}
                 </Typography>
-                <Typography fontSize={13} fontWeight={500} mt={0.5}
-                  fontFamily={mono ? 'monospace' : undefined}
-                  sx={mono ? { wordBreak: 'break-all', color: 'text.secondary' } : {}}>
+                <Typography sx={{
+                  fontSize: 13, fontWeight: 500, mt: 0.5,
+                  fontFamily: mono ? 'monospace' : undefined,
+                  ...(mono ? { wordBreak: 'break-all', color: 'text.secondary' } : {}),
+                }}>
                   {val}
                 </Typography>
-                {sub && <Typography fontSize={12} color="text.secondary">{sub}</Typography>}
+                {sub && <Typography color="text.secondary" sx={{ fontSize: 12 }}>{sub}</Typography>}
               </Grid>
             ))}
           </Grid>

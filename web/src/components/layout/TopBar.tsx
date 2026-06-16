@@ -33,7 +33,7 @@ export function TopBar({ onMenuClick, drawerWidth }: Props) {
           sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}
         >
           <FlightTakeoffIcon color="primary" />
-          <Typography fontWeight={700} fontSize={18} letterSpacing="-0.3px">GoFlyTo</Typography>
+          <Typography sx={{ fontWeight: 700, fontSize: 18, letterSpacing: '-0.3px' }}>GoFlyTo</Typography>
         </Box>
       </Toolbar>
     </AppBar>

@@ -36,7 +36,7 @@ export function SearchForm() {
       passengers: parseInt(passengers),
       nonstop_preferred: nonstop,
     }));
-    navigate(ctx.error ? '/' : '/results');
+    navigate(ctx.appError ? '/' : '/results');
   }
 
   return (
@@ -59,19 +59,19 @@ export function SearchForm() {
           <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', mb: 2.5 }}>
             <TextField label="Depart from" type="date" size="small"
               value={depFrom} onChange={e => setDepFrom(e.target.value)}
-              InputLabelProps={{ shrink: true }} sx={{ flex: '1 1 140px' }} />
+              slotProps={{ inputLabel: { shrink: true } }} sx={{ flex: '1 1 140px' }} />
             <TextField label="Return by" type="date" size="small"
               value={depTo} onChange={e => setDepTo(e.target.value)}
-              InputLabelProps={{ shrink: true }} sx={{ flex: '1 1 140px' }} />
+              slotProps={{ inputLabel: { shrink: true } }} sx={{ flex: '1 1 140px' }} />
             <TextField label="Min days" type="number" size="small"
               value={minDays} onChange={e => setMinDays(e.target.value)}
-              inputProps={{ min: 3, max: 60 }} sx={{ flex: '0 1 90px' }} />
+              slotProps={{ htmlInput: { min: 3, max: 60 } }} sx={{ flex: '0 1 90px' }} />
             <TextField label="Max days" type="number" size="small"
               value={maxDays} onChange={e => setMaxDays(e.target.value)}
-              inputProps={{ min: 3, max: 60 }} sx={{ flex: '0 1 90px' }} />
+              slotProps={{ htmlInput: { min: 3, max: 60 } }} sx={{ flex: '0 1 90px' }} />
             <TextField label="Passengers" type="number" size="small"
               value={passengers} onChange={e => setPassengers(e.target.value)}
-              inputProps={{ min: 1, max: 9 }} sx={{ flex: '0 1 100px' }} />
+              slotProps={{ htmlInput: { min: 1, max: 9 } }} sx={{ flex: '0 1 100px' }} />
           </Box>
 
           <Divider sx={{ mb: 2 }} />
@@ -79,7 +79,7 @@ export function SearchForm() {
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
             <FormControlLabel
               control={<Switch checked={nonstop} onChange={e => setNonstop(e.target.checked)} color="primary" />}
-              label={<Typography fontSize={14} fontWeight={500}>Nonstop only</Typography>}
+              label={<Typography sx={{ fontSize: 14, fontWeight: 500 }}>Nonstop only</Typography>}
             />
             <Button type="submit" variant="contained" size="large" startIcon={<SearchIcon />} sx={{ px: 4 }}>
               Search flights

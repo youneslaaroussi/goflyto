@@ -18,10 +18,12 @@ export const theme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
-        root: { borderRadius: 10, padding: '10px 24px', fontSize: 15 },
-        containedPrimary: {
-          boxShadow: 'none',
-          '&:hover': { boxShadow: '0 4px 12px rgba(7,112,227,0.35)' },
+        root: {
+          borderRadius: 10, padding: '10px 24px', fontSize: 15,
+          '&.MuiButton-containedPrimary': {
+            boxShadow: 'none',
+            '&:hover': { boxShadow: '0 4px 12px rgba(7,112,227,0.35)' },
+          },
         },
       },
     },

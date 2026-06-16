@@ -38,8 +38,8 @@ export function ResultsScreen() {
   if (!result) return (
     <Container maxWidth="md" sx={{ py: 4, textAlign: 'center' }}>
       <AirplaneTicketIcon sx={{ fontSize: 52, color: 'text.disabled', mb: 2 }} />
-      <Typography fontWeight={600} fontSize={16} mb={1}>No results yet</Typography>
-      <Typography fontSize={14} color="text.secondary" mb={3}>
+      <Typography sx={{ fontWeight: 600, fontSize: 16, mb: 1 }}>No results yet</Typography>
+      <Typography color="text.secondary" sx={{ fontSize: 14, mb: 3 }}>
         Run a search first to see flights here.
       </Typography>
       <Button variant="contained" onClick={() => navigate('/')}>Go to search</Button>

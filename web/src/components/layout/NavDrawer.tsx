@@ -41,8 +41,8 @@ function DrawerContent() {
           <FlightTakeoffIcon sx={{ color: '#fff', fontSize: 20 }} />
         </Box>
         <Box>
-          <Typography fontWeight={700} fontSize={16} letterSpacing="-0.3px" lineHeight={1}>GoFlyTo</Typography>
-          <Typography fontSize={11} color="text.secondary">Flight Optimizer</Typography>
+          <Typography sx={{ fontWeight: 700, fontSize: 16, letterSpacing: '-0.3px', lineHeight: 1 }}>GoFlyTo</Typography>
+          <Typography color="text.secondary" sx={{ fontSize: 11 }}>Flight Optimizer</Typography>
         </Box>
       </Box>
 
@@ -73,7 +73,7 @@ function DrawerContent() {
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText
                   primary={item.label}
-                  primaryTypographyProps={{ fontSize: 14, fontWeight: active ? 600 : 400 }}
+                  slotProps={{ primary: { sx: { fontSize: 14, fontWeight: active ? 600 : 400 } } }}
                 />
                 {item.requiresResult && result && (
                   <Chip
@@ -96,9 +96,9 @@ function DrawerContent() {
         <Box sx={{ bgcolor: 'primary.light', borderRadius: 2, p: 1.5 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
             <TrendingDownIcon sx={{ color: 'primary.main', fontSize: 16 }} />
-            <Typography fontSize={12} fontWeight={600} color="primary.main">Pro tip</Typography>
+            <Typography color="primary.main" sx={{ fontSize: 12, fontWeight: 600 }}>Pro tip</Typography>
           </Box>
-          <Typography fontSize={11} color="text.secondary" lineHeight={1.5}>
+          <Typography color="text.secondary" sx={{ fontSize: 11, lineHeight: 1.5 }}>
             Open-jaw routing (fly into one city, out of another) often saves 10–20%.
           </Typography>
         </Box>

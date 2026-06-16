@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 export const AIRPORTS = [
   { code: 'YUL', city: 'Montreal' },
@@ -28,8 +28,8 @@ export function AirportSelect({ label, value, onChange }: Props) {
       <Select value={value} label={label} onChange={e => onChange(e.target.value)}>
         {AIRPORTS.map(a => (
           <MenuItem key={a.code} value={a.code}>
-            <Typography component="span" fontWeight={600} sx={{ mr: 1 }}>{a.code}</Typography>
-            <Typography component="span" color="text.secondary" fontSize={13}>{a.city}</Typography>
+            <Box component="span" sx={{ fontWeight: 600, mr: 1 }}>{a.code}</Box>
+            <Box component="span" sx={{ color: 'text.secondary', fontSize: 13 }}>{a.city}</Box>
           </MenuItem>
         ))}
       </Select>

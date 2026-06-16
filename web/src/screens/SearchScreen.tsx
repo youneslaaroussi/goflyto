@@ -61,10 +61,10 @@ export function SearchScreen() {
       <Container maxWidth="md" sx={{ py: 3 }}>
         <Box sx={{ textAlign: 'center', py: 6, color: 'text.secondary' }}>
           <PublicIcon sx={{ fontSize: 52, color: 'primary.light', mb: 1.5 }} />
-          <Typography fontWeight={600} fontSize={16} color="text.primary" mb={0.5}>
+          <Typography color="text.primary" sx={{ fontWeight: 600, fontSize: 16, mb: 0.5 }}>
             Ready to find your flight
           </Typography>
-          <Typography fontSize={14}>
+          <Typography sx={{ fontSize: 14 }}>
             Enter your trip details above. Results will appear in the Results screen.
           </Typography>
         </Box>

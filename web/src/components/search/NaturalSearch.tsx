@@ -21,7 +21,7 @@ export function NaturalSearch() {
     if (!message.trim()) return;
     navigate('/searching');
     await runWithSteps(ctx, () => searchNatural(message.trim()));
-    navigate(ctx.error ? '/ai' : '/results');
+    navigate(ctx.appError ? '/ai' : '/results');
   }
 
   function handleKey(e: KeyboardEvent<HTMLDivElement>) {
@@ -63,7 +63,7 @@ export function NaturalSearch() {
         </CardContent>
       </Card>
 
-      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
         {EXAMPLES.map(ex => (
           <Chip key={ex} label={ex} onClick={() => setMessage(ex)} clickable
             sx={{

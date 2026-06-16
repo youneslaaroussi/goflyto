@@ -38,10 +38,10 @@ export function SearchingScreen() {
             <FlightTakeoffIcon color="primary" sx={{ fontSize: 36 }} />
           </Box>
 
-          <Typography variant="h6" fontWeight={700} mb={0.5}>
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>
             Searching flights
           </Typography>
-          <Typography color="text.secondary" fontSize={14} mb={4}>
+          <Typography color="text.secondary" sx={{ fontSize: 14, mb: 4 }}>
             {currentStep ? currentStep.label : 'Wrapping up…'}
           </Typography>
 
@@ -70,8 +70,8 @@ export function SearchingScreen() {
                     ) : (
                       <RadioButtonUncheckedIcon sx={{ fontSize: 20, color: 'text.disabled', flexShrink: 0 }} />
                     )}
-                    <Typography fontSize={14} fontWeight={isActive ? 600 : 400} color={step.done ? 'text.secondary' : 'text.primary'}
-                      sx={{ textDecoration: step.done ? 'line-through' : 'none' }}>
+                    <Typography color={step.done ? 'text.secondary' : 'text.primary'}
+                      sx={{ fontSize: 14, fontWeight: isActive ? 600 : 400, textDecoration: step.done ? 'line-through' : 'none' }}>
                       {step.label}
                     </Typography>
                   </Box>
@@ -81,7 +81,7 @@ export function SearchingScreen() {
           )}
 
           {steps.length === 0 && (
-            <Typography fontSize={13} color="text.disabled">Connecting to flight data…</Typography>
+            <Typography sx={{ fontSize: 13 }} color="text.disabled">Connecting to flight data…</Typography>
           )}
         </Box>
       </Container>
