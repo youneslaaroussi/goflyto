@@ -4,6 +4,7 @@ import { AppShell } from './components/layout/AppShell';
 import { SearchScreen } from './screens/SearchScreen';
 import { ResultsScreen } from './screens/ResultsScreen';
 import { AiScreen } from './screens/AiScreen';
+import { SearchingScreen } from './screens/SearchingScreen';
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <Routes>
           <Route element={<AppShell />}>
             <Route index element={<SearchScreen />} />
+            <Route path="searching" element={<SearchingScreen />} />
             <Route path="results" element={<ResultsScreen />} />
             <Route path="ai" element={<AiScreen />} />
             <Route path="*" element={<Navigate to="/" replace />} />

@@ -3,6 +3,7 @@ import {
   Alert, Box, Button, Container, Skeleton, Stack, Typography,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket';
 import { useNavigate } from 'react-router-dom';
 import { useSearch } from '../context/SearchContext';
 import { ResultsSummary } from '../components/results/ResultsSummary';
@@ -36,7 +37,7 @@ export function ResultsScreen() {
 
   if (!result) return (
     <Container maxWidth="md" sx={{ py: 4, textAlign: 'center' }}>
-      <Typography sx={{ fontSize: 48, mb: 2 }}>✈️</Typography>
+      <AirplaneTicketIcon sx={{ fontSize: 52, color: 'text.disabled', mb: 2 }} />
       <Typography fontWeight={600} fontSize={16} mb={1}>No results yet</Typography>
       <Typography fontSize={14} color="text.secondary" mb={3}>
         Run a search first to see flights here.

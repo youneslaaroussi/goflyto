@@ -1,3 +1,4 @@
+import type React from 'react';
 import {
   Box, Divider, Drawer, List, ListItem, ListItemButton,
   ListItemIcon, ListItemText, Typography, Chip,
@@ -7,6 +8,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSearch } from '../../context/SearchContext';
 
@@ -16,8 +18,9 @@ interface Props {
   onClose: () => void;
 }
 
-const NAV_ITEMS = [
+const NAV_ITEMS: { label: string; icon: React.ReactNode; path: string; requiresResult?: true; requiresLoading?: true }[] = [
   { label: 'Search', icon: <SearchIcon />, path: '/' },
+  { label: 'Searching…', icon: <HourglassTopIcon />, path: '/searching', requiresLoading: true },
   { label: 'Results', icon: <ListAltIcon />, path: '/results', requiresResult: true },
   { label: 'Ask AI', icon: <AutoAwesomeIcon />, path: '/ai' },
 ];
@@ -25,7 +28,7 @@ const NAV_ITEMS = [
 function DrawerContent() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { result } = useSearch();
+  const { result, loading } = useSearch();
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -51,7 +54,8 @@ function DrawerContent() {
           Navigation
         </Typography>
         {NAV_ITEMS.map(item => {
-          const disabled = item.requiresResult && !result;
+          const disabled = (item.requiresResult && !result) || (item.requiresLoading && !loading);
+          if (item.requiresLoading && !loading) return null;
           const active = location.pathname === item.path;
           return (
             <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>

@@ -1,7 +1,7 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Alert, Box, Container, Typography } from '@mui/material';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { NaturalSearch } from '../components/search/NaturalSearch';
 import { useSearch } from '../context/SearchContext';
-import { Alert } from '@mui/material';
 
 export function AiScreen() {
   const { error, loading } = useSearch();
@@ -14,9 +14,12 @@ export function AiScreen() {
       }}>
         <Container maxWidth="md">
           <Box sx={{ pt: 5, pb: 1 }}>
-            <Typography variant="h1" sx={{ fontSize: { xs: 28, md: 40 }, color: '#fff', mb: 1.5 }}>
-              ✨ Ask AI
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+              <AutoAwesomeIcon sx={{ color: '#c084fc', fontSize: 32 }} />
+              <Typography variant="h1" sx={{ fontSize: { xs: 28, md: 40 }, color: '#fff' }}>
+                Ask AI
+              </Typography>
+            </Box>
             <Typography sx={{ color: 'rgba(255,255,255,0.75)', fontSize: 16, mb: 4, maxWidth: 480 }}>
               Describe your trip in plain English. Gemini extracts your constraints
               and we sweep every route and date combo to find the best deal.

@@ -4,6 +4,7 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { searchNatural } from '../../api';
 import { useSearch } from '../../context/SearchContext';
 import { useNavigate } from 'react-router-dom';
+import { runWithSteps } from '../../searchSteps';
 
 const EXAMPLES = [
   'Montreal to Morocco late July, 2 weeks',
@@ -12,23 +13,15 @@ const EXAMPLES = [
 ];
 
 export function NaturalSearch() {
-  const { setResult, setLoading, setError } = useSearch();
+  const ctx = useSearch();
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
 
   async function submit() {
     if (!message.trim()) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await searchNatural(message.trim());
-      setResult(result);
-      navigate('/results');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Search failed');
-    } finally {
-      setLoading(false);
-    }
+    navigate('/searching');
+    await runWithSteps(ctx, () => searchNatural(message.trim()));
+    navigate(ctx.error ? '/ai' : '/results');
   }
 
   function handleKey(e: KeyboardEvent<HTMLDivElement>) {

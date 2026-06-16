@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Alert, Box, Container, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import PublicIcon from '@mui/icons-material/Public';
 import { SearchForm } from '../components/search/SearchForm';
 import { NaturalSearch } from '../components/search/NaturalSearch';
 import { useSearch } from '../context/SearchContext';
@@ -60,7 +61,7 @@ export function SearchScreen() {
         )}
         {!error && !loading && (
           <Box sx={{ textAlign: 'center', py: 6, color: 'text.secondary' }}>
-            <Typography sx={{ fontSize: 48, mb: 1.5 }}>🌍</Typography>
+            <PublicIcon sx={{ fontSize: 52, color: 'primary.light', mb: 1.5 }} />
             <Typography fontWeight={600} fontSize={16} color="text.primary" mb={0.5}>
               Ready to find your flight
             </Typography>

@@ -9,9 +9,10 @@ import { AirportSelect } from './AirportSelect';
 import { searchStructured } from '../../api';
 import { useSearch } from '../../context/SearchContext';
 import { useNavigate } from 'react-router-dom';
+import { runWithSteps } from '../../searchSteps';
 
 export function SearchForm() {
-  const { setResult, setLoading, setError } = useSearch();
+  const ctx = useSearch();
   const navigate = useNavigate();
 
   const [origin, setOrigin] = useState('YUL');
@@ -25,32 +26,23 @@ export function SearchForm() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await searchStructured({
-        origin, destination,
-        earliest_departure: depFrom,
-        latest_return: depTo,
-        trip_length_min_days: parseInt(minDays),
-        trip_length_max_days: parseInt(maxDays),
-        passengers: parseInt(passengers),
-        nonstop_preferred: nonstop,
-      });
-      setResult(result);
-      navigate('/results');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Search failed');
-    } finally {
-      setLoading(false);
-    }
+    navigate('/searching');
+    await runWithSteps(ctx, () => searchStructured({
+      origin, destination,
+      earliest_departure: depFrom,
+      latest_return: depTo,
+      trip_length_min_days: parseInt(minDays),
+      trip_length_max_days: parseInt(maxDays),
+      passengers: parseInt(passengers),
+      nonstop_preferred: nonstop,
+    }));
+    navigate(ctx.error ? '/' : '/results');
   }
 
   return (
     <Card elevation={3} sx={{ borderRadius: 3 }}>
       <CardContent sx={{ p: { xs: 2, md: 3 } }}>
         <Box component="form" onSubmit={handleSubmit}>
-          {/* Origin / Destination */}
           <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', mb: 2.5 }}>
             <AirportSelect label="From" value={origin} onChange={setOrigin} />
             <IconButton
@@ -64,7 +56,6 @@ export function SearchForm() {
 
           <Divider sx={{ mb: 2.5 }} />
 
-          {/* Date range + trip length */}
           <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', mb: 2.5 }}>
             <TextField label="Depart from" type="date" size="small"
               value={depFrom} onChange={e => setDepFrom(e.target.value)}
