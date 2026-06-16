@@ -1,5 +1,5 @@
 import { Box, Button, Container, Typography } from '@mui/material';
-import FlightOffIcon from '@mui/icons-material/FlightOff';
+import AirplanemodeInactiveIcon from '@mui/icons-material/AirplanemodeInactive';
 import WifiOffIcon from '@mui/icons-material/WifiOff';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -16,7 +16,7 @@ interface Props {
 }
 
 const CONFIG: Record<AppErrorCode, { Icon: SvgIconComponent; color: string; bgColor: string }> = {
-  NO_FLIGHTS_FOUND: { Icon: FlightOffIcon,      color: '#0770e3', bgColor: '#e8f0fb' },
+  NO_FLIGHTS_FOUND: { Icon: AirplanemodeInactiveIcon, color: '#0770e3', bgColor: '#e8f0fb' },
   NETWORK_OFFLINE:  { Icon: WifiOffIcon,         color: '#b45309', bgColor: '#fef3c7' },
   SEARCH_TIMEOUT:   { Icon: TimerOffIcon,        color: '#7c3aed', bgColor: '#ede9fe' },
   AI_PARSE_FAILED:  { Icon: PsychologyAltIcon,   color: '#0770e3', bgColor: '#e8f0fb' },
