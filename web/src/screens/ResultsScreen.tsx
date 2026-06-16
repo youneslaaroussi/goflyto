@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import {
-  Alert, Box, Button, Container, Skeleton, Stack, Typography,
-} from '@mui/material';
+import { Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket';
 import { useNavigate } from 'react-router-dom';
@@ -10,9 +8,10 @@ import { ResultsSummary } from '../components/results/ResultsSummary';
 import { ResultsFilters } from '../components/results/ResultsFilters';
 import { FlightCard } from '../components/results/FlightCard';
 import { StrategyNotes } from '../components/results/StrategyNotes';
+import { ErrorScreen } from '../components/errors/ErrorScreen';
 
 export function ResultsScreen() {
-  const { result, loading, error } = useSearch();
+  const { result, loading, appError } = useSearch();
   const navigate = useNavigate();
   const [filter, setFilter] = useState<'all' | 'nonstop'>('all');
   const [sortBy, setSortBy] = useState<'price' | 'stops'>('price');
@@ -28,11 +27,12 @@ export function ResultsScreen() {
     </Container>
   );
 
-  if (error) return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
-      <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/')}>Back to search</Button>
-    </Container>
+  if (appError) return (
+    <ErrorScreen
+      error={appError}
+      onRetry={() => navigate('/')}
+      onBack={() => navigate('/')}
+    />
   );
 
   if (!result) return (
@@ -58,7 +58,6 @@ export function ResultsScreen() {
 
   return (
     <Box sx={{ flex: 1 }}>
-      {/* Sticky subheader */}
       <Box sx={{
         position: 'sticky', top: 64, zIndex: 100,
         bgcolor: 'background.default',
@@ -82,12 +81,10 @@ export function ResultsScreen() {
           strategyNotes={result.strategy_notes}
           visaNotes={result.visa_notes}
         />
-
         <ResultsFilters
           filter={filter} sortBy={sortBy}
           onFilterChange={setFilter} onSortChange={setSortBy}
         />
-
         {sorted.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 6 }}>
             <Typography color="text.secondary">No flights match this filter.</Typography>

@@ -1,10 +1,19 @@
-import { Alert, Box, Container, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { NaturalSearch } from '../components/search/NaturalSearch';
+import { ErrorScreen } from '../components/errors/ErrorScreen';
 import { useSearch } from '../context/SearchContext';
 
 export function AiScreen() {
-  const { error, loading } = useSearch();
+  const { appError, setAppError } = useSearch();
+
+  if (appError) return (
+    <ErrorScreen
+      error={appError}
+      onRetry={() => setAppError(null)}
+      onBack={() => setAppError(null)}
+    />
+  );
 
   return (
     <Box sx={{ flex: 1 }}>
@@ -28,11 +37,6 @@ export function AiScreen() {
           </Box>
         </Container>
       </Box>
-
-      <Container maxWidth="md" sx={{ py: 3 }}>
-        {error && <Alert severity="error">{error}</Alert>}
-        {loading && <Alert severity="info" icon={false}>Analyzing your request and searching flights…</Alert>}
-      </Container>
     </Box>
   );
 }

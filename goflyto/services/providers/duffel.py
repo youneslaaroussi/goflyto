@@ -1,7 +1,12 @@
+import logging
+
 import httpx
+from goflyto.api.errors import invalid_route, search_timeout, service_unavailable
 from goflyto.core.config import settings
 from goflyto.models.flight import FlightOffer
 from goflyto.services.providers.base import FlightProvider, FlightQuery, OpenJawQuery
+
+log = logging.getLogger("goflyto")
 
 
 class DuffelProvider(FlightProvider):
@@ -46,13 +51,32 @@ class DuffelProvider(FlightProvider):
         return await self._post(payload)
 
     async def _post(self, payload: dict) -> list[FlightOffer]:
-        async with httpx.AsyncClient(timeout=30) as client:
-            resp = await client.post(
-                f"{settings.duffel_api_url}/air/offer_requests?return_offers=true",
-                headers=self._headers,
-                json=payload,
-            )
+        try:
+            async with httpx.AsyncClient(timeout=30) as client:
+                resp = await client.post(
+                    f"{settings.duffel_api_url}/air/offer_requests?return_offers=true",
+                    headers=self._headers,
+                    json=payload,
+                )
+        except httpx.TimeoutException as exc:
+            log.warning("Duffel timeout: %s", exc)
+            raise search_timeout() from exc
+        except httpx.RequestError as exc:
+            log.warning("Duffel network error: %s", exc)
+            raise service_unavailable() from exc
+
+        if resp.status_code == 422:
+            log.warning("Duffel 422 — invalid route payload: %s", resp.text[:200])
+            raise invalid_route()
+        if resp.status_code in (502, 503, 504):
+            log.warning("Duffel %d", resp.status_code)
+            raise service_unavailable()
+
+        try:
             resp.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            log.warning("Duffel HTTP %d: %s", resp.status_code, resp.text[:200])
+            raise service_unavailable() from exc
 
         offers = resp.json().get("data", {}).get("offers", [])
         return [self._parse(o) for o in offers]

@@ -1,12 +1,13 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
+from pydantic import BaseModel
 
+from goflyto.api.errors import ai_parse_failed, no_flights_found
 from goflyto.core.database import AsyncSessionLocal
 from goflyto.models.flight import SearchConstraints, SearchResult
 from goflyto.services.cache import CacheService
 from goflyto.services.providers.duffel import DuffelProvider
 from goflyto.services.vertex import VertexAIClient
 from goflyto.services.optimizer import FlightOptimizer
-from pydantic import BaseModel
 
 router = APIRouter(prefix="/search", tags=["search"])
 
@@ -24,7 +25,7 @@ class NaturalQuery(BaseModel):
 async def search_natural(query: NaturalQuery) -> SearchResult:
     raw = await _vertex.extract_constraints(query.message)
     if not raw:
-        raise HTTPException(status_code=422, detail="Could not parse travel constraints from message.")
+        raise ai_parse_failed()
 
     constraints = SearchConstraints(
         origin=raw.get("origin_iata") or raw.get("origin_city"),
@@ -39,9 +40,19 @@ async def search_natural(query: NaturalQuery) -> SearchResult:
         passport_nationality=raw.get("passport_nationality"),
     )
 
-    return await _optimizer.optimize(constraints)
+    result = await _optimizer.optimize(constraints)
+
+    if not result.offers:
+        raise no_flights_found()
+
+    return result
 
 
 @router.post("/structured", response_model=SearchResult)
 async def search_structured(constraints: SearchConstraints) -> SearchResult:
-    return await _optimizer.optimize(constraints)
+    result = await _optimizer.optimize(constraints)
+
+    if not result.offers:
+        raise no_flights_found()
+
+    return result

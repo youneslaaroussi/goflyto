@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import type { SearchResult } from '../types';
+import type { AppError } from '../errors';
 
 export interface LoadingStep {
   label: string;
@@ -9,11 +10,11 @@ export interface LoadingStep {
 interface SearchState {
   result: SearchResult | null;
   loading: boolean;
-  error: string | null;
+  appError: AppError | null;
   steps: LoadingStep[];
   setResult: (r: SearchResult | null) => void;
   setLoading: (l: boolean) => void;
-  setError: (e: string | null) => void;
+  setAppError: (e: AppError | null) => void;
   setSteps: (s: LoadingStep[]) => void;
   tickStep: (index: number) => void;
 }
@@ -23,7 +24,7 @@ const SearchContext = createContext<SearchState | null>(null);
 export function SearchProvider({ children }: { children: ReactNode }) {
   const [result, setResult] = useState<SearchResult | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [appError, setAppError] = useState<AppError | null>(null);
   const [steps, setSteps] = useState<LoadingStep[]>([]);
 
   function tickStep(index: number) {
@@ -31,7 +32,10 @@ export function SearchProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <SearchContext.Provider value={{ result, loading, error, steps, setResult, setLoading, setError, setSteps, tickStep }}>
+    <SearchContext.Provider value={{
+      result, loading, appError, steps,
+      setResult, setLoading, setAppError, setSteps, tickStep,
+    }}>
       {children}
     </SearchContext.Provider>
   );

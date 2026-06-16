@@ -1,9 +1,11 @@
 import type { SearchResult } from './types';
+import type { AppError } from './errors';
+import { UNKNOWN_ERROR } from './errors';
 
 interface SearchCtx {
   setResult: (r: SearchResult | null) => void;
   setLoading: (l: boolean) => void;
-  setError: (e: string | null) => void;
+  setAppError: (e: AppError | null) => void;
   setSteps: (s: { label: string; done: boolean }[]) => void;
   tickStep: (i: number) => void;
 }
@@ -20,14 +22,13 @@ const STEP_DURATIONS = [800, 3000, 3000, 1200, 600];
 
 export async function runWithSteps(
   ctx: SearchCtx,
-  fetch: () => Promise<SearchResult>,
+  fetchFn: () => Promise<SearchResult>,
 ): Promise<void> {
-  ctx.setError(null);
+  ctx.setAppError(null);
   ctx.setResult(null);
   ctx.setLoading(true);
   ctx.setSteps(STEPS.map(label => ({ label, done: false })));
 
-  // Tick step 0 immediately (parse), rest on timers
   let elapsed = 0;
   const timers: ReturnType<typeof setTimeout>[] = [];
   STEP_DURATIONS.slice(0, -1).forEach((dur, i) => {
@@ -36,9 +37,8 @@ export async function runWithSteps(
   });
 
   try {
-    const result = await fetch();
+    const result = await fetchFn();
     timers.forEach(clearTimeout);
-    // Tick all remaining undone steps fast
     for (let i = 0; i < STEPS.length - 1; i++) ctx.tickStep(i);
     await delay(300);
     ctx.tickStep(STEPS.length - 1);
@@ -46,10 +46,15 @@ export async function runWithSteps(
     ctx.setResult(result);
   } catch (err) {
     timers.forEach(clearTimeout);
-    ctx.setError(err instanceof Error ? err.message : 'Search failed');
+    const appErr = isAppError(err) ? err : UNKNOWN_ERROR;
+    ctx.setAppError(appErr);
   } finally {
     ctx.setLoading(false);
   }
+}
+
+function isAppError(e: unknown): e is AppError {
+  return typeof e === 'object' && e !== null && 'code' in e && 'message' in e && 'retryable' in e;
 }
 
 function delay(ms: number) {
