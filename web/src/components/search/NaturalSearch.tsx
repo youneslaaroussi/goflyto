@@ -1,34 +1,33 @@
 import { useState, type KeyboardEvent } from 'react';
-import { Box, Card, CardContent, TextField, Button, Stack, Chip, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Chip, Stack, TextField, Typography } from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import { searchNatural } from '../api';
-import type { SearchResult } from '../types';
+import { searchNatural } from '../../api';
+import { useSearch } from '../../context/SearchContext';
+import { useNavigate } from 'react-router-dom';
 
 const EXAMPLES = [
-  "Montreal to Morocco late July, 2 weeks",
-  "Cheapest YYZ to Marrakech, mid-July, 10-15 days, nonstop preferred",
-  "YUL to CMN or RAK, depart July 19, back before Aug 10",
+  'Montreal to Morocco late July, 2 weeks',
+  'Cheapest YYZ to Marrakech, mid-July, 10–15 days, nonstop',
+  'YUL to CMN or RAK, depart July 19, back before Aug 10',
 ];
 
-interface Props {
-  onResult: (r: SearchResult) => void;
-  onLoading: (l: boolean) => void;
-  onError: (e: string) => void;
-}
-
-export function NaturalSearch({ onResult, onLoading, onError }: Props) {
+export function NaturalSearch() {
+  const { setResult, setLoading, setError } = useSearch();
+  const navigate = useNavigate();
   const [message, setMessage] = useState('');
 
   async function submit() {
     if (!message.trim()) return;
-    onLoading(true);
-    onError('');
+    setLoading(true);
+    setError(null);
     try {
-      onResult(await searchNatural(message.trim()));
+      const result = await searchNatural(message.trim());
+      setResult(result);
+      navigate('/results');
     } catch (err) {
-      onError(err instanceof Error ? err.message : 'Search failed');
+      setError(err instanceof Error ? err.message : 'Search failed');
     } finally {
-      onLoading(false);
+      setLoading(false);
     }
   }
 
@@ -38,7 +37,7 @@ export function NaturalSearch({ onResult, onLoading, onError }: Props) {
 
   return (
     <Stack spacing={1.5}>
-      <Card elevation={6} sx={{ borderRadius: 3 }}>
+      <Card elevation={3} sx={{ borderRadius: 3 }}>
         <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
           <TextField
             fullWidth multiline rows={3} autoFocus
@@ -46,7 +45,6 @@ export function NaturalSearch({ onResult, onLoading, onError }: Props) {
             value={message}
             onChange={e => setMessage(e.target.value)}
             onKeyDown={handleKey}
-            variant="outlined"
             sx={{
               '& .MuiOutlinedInput-root': {
                 borderRadius: '12px 12px 0 0',
@@ -64,8 +62,7 @@ export function NaturalSearch({ onResult, onLoading, onError }: Props) {
             </Typography>
             <Button
               variant="contained" onClick={submit} disabled={!message.trim()}
-              startIcon={<AutoAwesomeIcon />}
-              sx={{ borderRadius: 2 }}
+              startIcon={<AutoAwesomeIcon />} sx={{ borderRadius: 2 }}
             >
               Find flights
             </Button>
@@ -73,11 +70,9 @@ export function NaturalSearch({ onResult, onLoading, onError }: Props) {
         </CardContent>
       </Card>
 
-      {/* Example prompts */}
       <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
         {EXAMPLES.map(ex => (
-          <Chip
-            key={ex} label={ex} onClick={() => setMessage(ex)} clickable
+          <Chip key={ex} label={ex} onClick={() => setMessage(ex)} clickable
             sx={{
               bgcolor: 'rgba(255,255,255,0.15)',
               color: 'rgba(255,255,255,0.9)',
