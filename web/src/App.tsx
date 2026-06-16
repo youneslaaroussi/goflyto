@@ -1,9 +1,14 @@
 import { useState } from 'react';
+import {
+  Box, Container, Typography, ToggleButton, ToggleButtonGroup,
+  Alert, Skeleton, Stack,
+} from '@mui/material';
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { SearchBar } from './components/SearchBar';
-import { Results } from './components/Results';
 import { NaturalSearch } from './components/NaturalSearch';
+import { Results } from './components/Results';
 import type { SearchResult } from './types';
-import styles from './App.module.css';
 
 export default function App() {
   const [result, setResult] = useState<SearchResult | null>(null);
@@ -15,90 +20,86 @@ export default function App() {
   const handleError = (e: string) => { setError(e); setResult(null); };
 
   return (
-    <div className={styles.app}>
-      <header className={styles.hero}>
-        <div className={styles.heroInner}>
-          <div className={styles.logoRow}>
-            <span className={styles.logo}>✈ GoFlyTo</span>
-            <div className={styles.modeTabs}>
-              <button
-                className={`${styles.modeTab} ${mode === 'structured' ? styles.modeTabActive : ''}`}
-                onClick={() => setMode('structured')}
-              >
-                Search
-              </button>
-              <button
-                className={`${styles.modeTab} ${mode === 'natural' ? styles.modeTabActive : ''}`}
-                onClick={() => setMode('natural')}
-              >
-                ✨ Ask AI
-              </button>
-            </div>
-          </div>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', display: 'flex', flexDirection: 'column' }}>
+      {/* Hero */}
+      <Box sx={{
+        background: 'linear-gradient(135deg, #0558b8 0%, #0770e3 50%, #1a8fef 100%)',
+        pb: 6,
+      }}>
+        <Container maxWidth="lg">
+          {/* Nav */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', py: 2.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <FlightTakeoffIcon sx={{ color: '#fff', fontSize: 26 }} />
+              <Typography variant="h6" sx={{ color: '#fff', fontWeight: 700, letterSpacing: '-0.3px' }}>
+                GoFlyTo
+              </Typography>
+            </Box>
+            <ToggleButtonGroup
+              value={mode}
+              exclusive
+              onChange={(_, v) => v && setMode(v)}
+              sx={{ bgcolor: 'rgba(255,255,255,0.15)', borderRadius: 2, p: '3px', border: 'none' }}
+            >
+              <ToggleButton value="structured" disableRipple>Search</ToggleButton>
+              <ToggleButton value="natural" disableRipple>
+                <AutoAwesomeIcon sx={{ fontSize: 15, mr: 0.6 }} /> Ask AI
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
 
-          <h1 className={styles.tagline}>
-            {mode === 'natural'
-              ? 'Just tell us where you want to go'
-              : 'The cheapest way to get there'}
-          </h1>
-          <p className={styles.sub}>
-            {mode === 'natural'
-              ? "Describe your trip in plain English — we'll find the optimal route, dates and strategy."
-              : "We sweep every date combo and open-jaw route so you don't have to."}
-          </p>
+          {/* Headline */}
+          <Box sx={{ mt: 3, mb: 4 }}>
+            <Typography variant="h1" sx={{ fontSize: { xs: 28, md: 42 }, color: '#fff', mb: 1.5 }}>
+              {mode === 'natural'
+                ? 'Just tell us where you want to go'
+                : 'The cheapest way to get there'}
+            </Typography>
+            <Typography sx={{ color: 'rgba(255,255,255,0.8)', fontSize: 16, maxWidth: 520 }}>
+              {mode === 'natural'
+                ? "Describe your trip in plain English — we'll find the optimal route, dates and strategy."
+                : "We sweep every date combo and open-jaw route so you don't have to."}
+            </Typography>
+          </Box>
 
-          {mode === 'natural' ? (
-            <NaturalSearch onResult={handleResult} onLoading={setLoading} onError={handleError} />
-          ) : (
-            <SearchBar onResult={handleResult} onLoading={setLoading} onError={handleError} />
-          )}
-        </div>
-      </header>
+          {/* Search widget */}
+          {mode === 'natural'
+            ? <NaturalSearch onResult={handleResult} onLoading={setLoading} onError={handleError} />
+            : <SearchBar onResult={handleResult} onLoading={setLoading} onError={handleError} />}
+        </Container>
+      </Box>
 
-      <main className={styles.main}>
-        {error && (
-          <div className={styles.errorBanner}>
-            <span>⚠</span> {error}
-          </div>
-        )}
+      {/* Results area */}
+      <Container maxWidth="lg" sx={{ flex: 1, py: 4 }}>
+        {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
         {loading && <LoadingSkeleton />}
         {!loading && result && <Results result={result} />}
         {!loading && !result && !error && <EmptyState />}
-      </main>
+      </Container>
 
-      <footer className={styles.footer}>
+      <Box component="footer" sx={{ textAlign: 'center', py: 3, color: 'text.secondary', fontSize: 12, borderTop: '1px solid', borderColor: 'divider' }}>
         Powered by Duffel · Prices in USD · {new Date().getFullYear()}
-      </footer>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
 function LoadingSkeleton() {
   return (
-    <div style={{ padding: '32px 24px', maxWidth: 900, margin: '0 auto' }}>
+    <Stack spacing={1.5}>
       {[...Array(5)].map((_, i) => (
-        <div key={i} style={{
-          height: 104, borderRadius: 12, marginBottom: 12,
-          background: 'linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 50%,#e5e7eb 75%)',
-          backgroundSize: '200% 100%',
-          animation: 'shimmer 1.4s infinite'
-        }} />
+        <Skeleton key={i} variant="rounded" height={104} animation="wave" sx={{ borderRadius: 3 }} />
       ))}
-      <style>{`@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
-    </div>
+    </Stack>
   );
 }
 
 function EmptyState() {
   return (
-    <div style={{ textAlign: 'center', padding: '80px 24px', color: 'var(--gray-400)' }}>
-      <div style={{ fontSize: 60, marginBottom: 16 }}>🌍</div>
-      <p style={{ fontSize: 18, fontWeight: 600, color: 'var(--gray-600)', marginBottom: 8 }}>
-        Ready to find your flight
-      </p>
-      <p style={{ fontSize: 14, color: 'var(--gray-400)' }}>
-        Enter your trip details and we'll sweep all date combos for the best deal.
-      </p>
-    </div>
+    <Box sx={{ textAlign: 'center', py: 10, color: 'text.secondary' }}>
+      <Typography sx={{ fontSize: 56, mb: 2 }}>🌍</Typography>
+      <Typography variant="h6" sx={{ mb: 1, color: 'text.primary' }}>Ready to find your flight</Typography>
+      <Typography variant="body2">Enter your trip details and we'll sweep all date combos for the best deal.</Typography>
+    </Box>
   );
 }
