@@ -1,0 +1,25 @@
+# Secrets — never commit these
+.env
+*.json
+!web/tsconfig*.json
+!web/package*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+dist/
+build/
+*.egg
+
+# Alembic
+alembic/versions/__pycache__/
+
+# Node
+web/node_modules/
+web/dist/
+
+# Misc
+*.log
+.DS_Store
