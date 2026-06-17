@@ -56,18 +56,52 @@ class VertexAIClient:
 
         return resp.json()["candidates"][0]["content"]["parts"][0]["text"]
 
+    _CONSTRAINTS_SCHEMA = {
+        "type": "OBJECT",
+        "properties": {
+            "origin_iata": {"type": "STRING"},
+            "destination_iata_options": {"type": "ARRAY", "items": {"type": "STRING"}},
+            "earliest_departure_date": {"type": "STRING"},
+            "latest_departure_date": {"type": "STRING"},
+            "min_trip_days": {"type": "INTEGER"},
+            "max_trip_days": {"type": "INTEGER"},
+            "budget_usd": {"type": "NUMBER"},
+            "nonstop_preferred": {"type": "BOOLEAN"},
+            "passport_nationality": {"type": "STRING"},
+        },
+    }
+
     async def extract_constraints(self, user_message: str) -> dict:
+        import json
+        from datetime import date
+
         system = (
-            "You are a flight search assistant. Extract travel constraints from the user's message "
-            "and return ONLY a valid JSON object with these fields (omit any you can't determine): "
-            "origin_city, origin_iata, destination_city, destination_iata_options (array of airport codes), "
-            "earliest_departure_date (YYYY-MM-DD), latest_departure_date (YYYY-MM-DD), "
-            "min_trip_days, max_trip_days, budget_usd, nonstop_preferred (bool), "
-            "passport_nationality. Today is 2026-06-16."
+            f"You are a flight search assistant. Extract travel constraints from the user's message. "
+            f"Today is {date.today().isoformat()}. "
+            "For destination_iata_options include all airport codes the user mentioned or implied. "
+            "Use ISO 3166-1 alpha-2 for passport_nationality (e.g. CA, US, GB)."
         )
-        response = await self.chat([
-            {"role": "user", "content": f"{system}\n\nUser said: {user_message}"},
-        ])
-        import json, re
-        match = re.search(r"\{.*\}", response, re.DOTALL)
-        return json.loads(match.group()) if match else {}
+        contents = [
+            {"role": "user", "parts": [{"text": f"{system}\n\nUser said: {user_message}"}]}
+        ]
+        payload = {
+            "contents": contents,
+            "generationConfig": {
+                "response_mime_type": "application/json",
+                "response_schema": self._CONSTRAINTS_SCHEMA,
+            },
+        }
+
+        async with httpx.AsyncClient(timeout=60) as client:
+            resp = await client.post(
+                self._endpoint,
+                headers={
+                    "Authorization": f"Bearer {self._get_token()}",
+                    "Content-Type": "application/json",
+                },
+                json=payload,
+            )
+            resp.raise_for_status()
+
+        text = resp.json()["candidates"][0]["content"]["parts"][0]["text"]
+        return json.loads(text)

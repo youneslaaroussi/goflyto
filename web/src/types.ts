@@ -1,7 +1,9 @@
 export interface SearchConstraints {
   origin?: string;
   destination?: string;
+  destination_airports?: string[];
   earliest_departure?: string;
+  latest_departure?: string;
   latest_return?: string;
   trip_length_min_days?: number;
   trip_length_max_days?: number;

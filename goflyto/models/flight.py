@@ -3,10 +3,12 @@ from typing import Optional
 
 
 class SearchConstraints(BaseModel):
-    origin: Optional[str] = None          # e.g. "Toronto" or "YYZ"
-    destination: Optional[str] = None     # e.g. "Morocco" or "RAK"
-    earliest_departure: Optional[str] = None   # e.g. "mid July"
-    latest_return: Optional[str] = None        # e.g. "early August"
+    origin: Optional[str] = None
+    destination: Optional[str] = None
+    destination_airports: list[str] = []
+    earliest_departure: Optional[str] = None
+    latest_departure: Optional[str] = None
+    latest_return: Optional[str] = None
     trip_length_min_days: Optional[int] = None
     trip_length_max_days: Optional[int] = None
     budget_usd: Optional[float] = None
@@ -30,5 +32,5 @@ class FlightOffer(BaseModel):
 class SearchResult(BaseModel):
     constraints: SearchConstraints
     offers: list[FlightOffer]
-    strategy_notes: list[str]   # e.g. "open jaw saves $40", "avoid Aug 5 return"
+    strategy_notes: list[str]
     visa_notes: list[str]

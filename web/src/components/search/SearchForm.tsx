@@ -1,9 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import {
   Box, Button, Card, CardContent, Divider,
-  FormControlLabel, IconButton, Switch, TextField, Typography,
+  FormControlLabel, Switch, TextField, Typography,
 } from '@mui/material';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import SearchIcon from '@mui/icons-material/Search';
 import { AirportSelect } from './AirportSelect';
 import { searchStructured } from '../../api';
@@ -16,7 +15,7 @@ export function SearchForm() {
   const navigate = useNavigate();
 
   const [origin, setOrigin] = useState('YUL');
-  const [destination, setDestination] = useState('CMN');
+  const [destinations, setDestinations] = useState<string[]>(['CMN']);
   const [depFrom, setDepFrom] = useState('2026-07-19');
   const [depTo, setDepTo] = useState('2026-07-26');
   const [minDays, setMinDays] = useState('10');
@@ -26,10 +25,14 @@ export function SearchForm() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!destinations.length) return;
     navigate('/searching');
     await runWithSteps(ctx, () => searchStructured({
-      origin, destination,
+      origin,
+      destination: destinations[0],
+      destination_airports: destinations,
       earliest_departure: depFrom,
+      latest_departure: depTo,
       latest_return: depTo,
       trip_length_min_days: parseInt(minDays),
       trip_length_max_days: parseInt(maxDays),
@@ -43,16 +46,25 @@ export function SearchForm() {
     <Card elevation={3} sx={{ borderRadius: 3 }}>
       <CardContent sx={{ p: { xs: 2, md: 3 } }}>
         <Box component="form" onSubmit={handleSubmit}>
-          <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', mb: 2.5 }}>
-            <AirportSelect label="From" value={origin} onChange={setOrigin} />
-            <IconButton
-              onClick={() => { setOrigin(destination); setDestination(origin); }}
-              sx={{ border: '1.5px solid', borderColor: 'divider', borderRadius: 2, p: 1, flexShrink: 0 }}
-            >
-              <SwapHorizIcon />
-            </IconButton>
-            <AirportSelect label="To" value={destination} onChange={setDestination} />
+          <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start', mb: 2.5 }}>
+            <Box sx={{ flex: 1 }}>
+              <AirportSelect label="From" value={origin} onChange={setOrigin} />
+            </Box>
+            <Box sx={{ flex: 2 }}>
+              <AirportSelect
+                label="To (select one or more)"
+                value={destinations}
+                onChange={setDestinations}
+                multiple
+              />
+            </Box>
           </Box>
+
+          {destinations.length > 1 && (
+            <Typography color="text.secondary" sx={{ fontSize: 12, mb: 2, mt: -1.5 }}>
+              We'll search all selected airports and open-jaw combinations.
+            </Typography>
+          )}
 
           <Divider sx={{ mb: 2.5 }} />
 
@@ -60,7 +72,7 @@ export function SearchForm() {
             <TextField label="Depart from" type="date" size="small"
               value={depFrom} onChange={e => setDepFrom(e.target.value)}
               slotProps={{ inputLabel: { shrink: true } }} sx={{ flex: '1 1 140px' }} />
-            <TextField label="Return by" type="date" size="small"
+            <TextField label="Depart by" type="date" size="small"
               value={depTo} onChange={e => setDepTo(e.target.value)}
               slotProps={{ inputLabel: { shrink: true } }} sx={{ flex: '1 1 140px' }} />
             <TextField label="Min days" type="number" size="small"
@@ -81,7 +93,11 @@ export function SearchForm() {
               control={<Switch checked={nonstop} onChange={e => setNonstop(e.target.checked)} color="primary" />}
               label={<Typography sx={{ fontSize: 14, fontWeight: 500 }}>Nonstop only</Typography>}
             />
-            <Button type="submit" variant="contained" size="large" startIcon={<SearchIcon />} sx={{ px: 4 }}>
+            <Button
+              type="submit" variant="contained" size="large"
+              startIcon={<SearchIcon />} sx={{ px: 4 }}
+              disabled={!destinations.length}
+            >
               Search flights
             </Button>
           </Box>

@@ -1,14 +1,19 @@
+from goflyto.core.logging import configure as configure_logging
+configure_logging()  # must be first — before any other import that logs
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from goflyto.api.errors import AppError, app_error_handler, unhandled_error_handler
+from goflyto.api.middleware import LoggingMiddleware
 from goflyto.api.routes import search
 
-app = FastAPI(title="GoFlyTo", docs_url=None, redoc_url=None)  # hide docs in prod
+app = FastAPI(title="GoFlyTo", docs_url=None, redoc_url=None)
 
+app.add_middleware(LoggingMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # tightened to Vite dev server only
+    allow_origins=["http://localhost:5173"],
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )
