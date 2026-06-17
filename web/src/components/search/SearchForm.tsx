@@ -1,14 +1,15 @@
 import { useState, type FormEvent } from 'react';
-import {
-  Box, Button, Card, CardContent, Divider,
-  FormControlLabel, Switch, TextField, Typography,
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
 import { AirportSelect } from './AirportSelect';
-import { searchStructured } from '../../api';
-import { useSearch } from '../../context/SearchContext';
+import { searchStructured } from '@/api';
+import { useSearch } from '@/context/SearchContext';
 import { useNavigate } from 'react-router-dom';
-import { runWithSteps } from '../../searchSteps';
+import { runWithSteps } from '@/searchSteps';
 
 export function SearchForm() {
   const ctx = useSearch();
@@ -43,66 +44,59 @@ export function SearchForm() {
   }
 
   return (
-    <Card elevation={3} sx={{ borderRadius: 3 }}>
-      <CardContent sx={{ p: { xs: 2, md: 3 } }}>
-        <Box component="form" onSubmit={handleSubmit}>
-          <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start', mb: 2.5 }}>
-            <Box sx={{ flex: 1 }}>
-              <AirportSelect label="From" value={origin} onChange={setOrigin} />
-            </Box>
-            <Box sx={{ flex: 2 }}>
-              <AirportSelect
-                label="To (select one or more)"
-                value={destinations}
-                onChange={setDestinations}
-                multiple
-              />
-            </Box>
-          </Box>
+    <div className="bg-white rounded-2xl shadow-lg p-5">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Origin / Destination */}
+        <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] gap-3">
+          <AirportSelect label="From" value={origin} onChange={setOrigin} />
+          <AirportSelect label="To (one or more)" value={destinations} onChange={setDestinations} multiple />
+        </div>
 
-          {destinations.length > 1 && (
-            <Typography color="text.secondary" sx={{ fontSize: 12, mb: 2, mt: -1.5 }}>
-              We'll search all selected airports and open-jaw combinations.
-            </Typography>
-          )}
+        {destinations.length > 1 && (
+          <p className="text-xs text-muted-foreground -mt-2">
+            We'll sweep all selected airports and open-jaw combinations.
+          </p>
+        )}
 
-          <Divider sx={{ mb: 2.5 }} />
+        <Separator />
 
-          <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', mb: 2.5 }}>
-            <TextField label="Depart from" type="date" size="small"
-              value={depFrom} onChange={e => setDepFrom(e.target.value)}
-              slotProps={{ inputLabel: { shrink: true } }} sx={{ flex: '1 1 140px' }} />
-            <TextField label="Depart by" type="date" size="small"
-              value={depTo} onChange={e => setDepTo(e.target.value)}
-              slotProps={{ inputLabel: { shrink: true } }} sx={{ flex: '1 1 140px' }} />
-            <TextField label="Min days" type="number" size="small"
-              value={minDays} onChange={e => setMinDays(e.target.value)}
-              slotProps={{ htmlInput: { min: 3, max: 60 } }} sx={{ flex: '0 1 90px' }} />
-            <TextField label="Max days" type="number" size="small"
-              value={maxDays} onChange={e => setMaxDays(e.target.value)}
-              slotProps={{ htmlInput: { min: 3, max: 60 } }} sx={{ flex: '0 1 90px' }} />
-            <TextField label="Passengers" type="number" size="small"
-              value={passengers} onChange={e => setPassengers(e.target.value)}
-              slotProps={{ htmlInput: { min: 1, max: 9 } }} sx={{ flex: '0 1 100px' }} />
-          </Box>
+        {/* Date / trip length row */}
+        <div className="grid grid-cols-2 sm:grid-cols-[1fr_1fr_auto_auto_auto] gap-3 items-end">
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Depart from</Label>
+            <Input type="date" value={depFrom} onChange={e => setDepFrom(e.target.value)} className="h-9 text-sm" />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Depart by</Label>
+            <Input type="date" value={depTo} onChange={e => setDepTo(e.target.value)} className="h-9 text-sm" />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Min days</Label>
+            <Input type="number" min={3} max={60} value={minDays} onChange={e => setMinDays(e.target.value)} className="h-9 text-sm w-20" />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Max days</Label>
+            <Input type="number" min={3} max={60} value={maxDays} onChange={e => setMaxDays(e.target.value)} className="h-9 text-sm w-20" />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Pax</Label>
+            <Input type="number" min={1} max={9} value={passengers} onChange={e => setPassengers(e.target.value)} className="h-9 text-sm w-16" />
+          </div>
+        </div>
 
-          <Divider sx={{ mb: 2 }} />
+        <Separator />
 
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
-            <FormControlLabel
-              control={<Switch checked={nonstop} onChange={e => setNonstop(e.target.checked)} color="primary" />}
-              label={<Typography sx={{ fontSize: 14, fontWeight: 500 }}>Nonstop only</Typography>}
-            />
-            <Button
-              type="submit" variant="contained" size="large"
-              startIcon={<SearchIcon />} sx={{ px: 4 }}
-              disabled={!destinations.length}
-            >
-              Search flights
-            </Button>
-          </Box>
-        </Box>
-      </CardContent>
-    </Card>
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <Switch id="nonstop" checked={nonstop} onCheckedChange={setNonstop} />
+            <Label htmlFor="nonstop" className="text-sm font-medium cursor-pointer">Nonstop only</Label>
+          </div>
+          <Button type="submit" size="lg" disabled={!destinations.length} className="px-8">
+            <Search className="size-4 mr-2" />
+            Search flights
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }

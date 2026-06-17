@@ -1,13 +1,7 @@
-import { Box, Button, Container, Typography } from '@mui/material';
-import AirplanemodeInactiveIcon from '@mui/icons-material/AirplanemodeInactive';
-import WifiOffIcon from '@mui/icons-material/WifiOff';
-import SearchOffIcon from '@mui/icons-material/SearchOff';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutlined';
-import CloudOffIcon from '@mui/icons-material/CloudOff';
-import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
-import TimerOffIcon from '@mui/icons-material/TimerOff';
-import type { SvgIconComponent } from '@mui/icons-material';
-import type { AppError, AppErrorCode } from '../../errors';
+import { PlaneTakeoff, WifiOff, SearchX, HelpCircle, CloudOff, BrainCircuit, TimerOff } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import type { AppError, AppErrorCode } from '@/errors';
+import type { LucideIcon } from 'lucide-react';
 
 interface Props {
   error: AppError;
@@ -15,61 +9,36 @@ interface Props {
   onBack?: () => void;
 }
 
-const CONFIG: Record<AppErrorCode, { Icon: SvgIconComponent; color: string; bgColor: string }> = {
-  NO_FLIGHTS_FOUND: { Icon: AirplanemodeInactiveIcon, color: '#0770e3', bgColor: '#e8f0fb' },
-  NETWORK_OFFLINE:  { Icon: WifiOffIcon,         color: '#b45309', bgColor: '#fef3c7' },
-  SEARCH_TIMEOUT:   { Icon: TimerOffIcon,        color: '#7c3aed', bgColor: '#ede9fe' },
-  AI_PARSE_FAILED:  { Icon: PsychologyAltIcon,   color: '#0770e3', bgColor: '#e8f0fb' },
-  INVALID_ROUTE:    { Icon: SearchOffIcon,       color: '#b45309', bgColor: '#fef3c7' },
-  SERVICE_UNAVAILABLE: { Icon: CloudOffIcon,     color: '#b91c1c', bgColor: '#fee2e2' },
-  UNKNOWN:          { Icon: HelpOutlineIcon,     color: '#374151', bgColor: '#f3f4f6' },
+const CONFIG: Record<AppErrorCode, { Icon: LucideIcon; color: string; bg: string }> = {
+  NO_FLIGHTS_FOUND:    { Icon: PlaneTakeoff,  color: 'text-primary',     bg: 'bg-accent' },
+  NETWORK_OFFLINE:     { Icon: WifiOff,        color: 'text-amber-600',   bg: 'bg-amber-50' },
+  SEARCH_TIMEOUT:      { Icon: TimerOff,       color: 'text-violet-600',  bg: 'bg-violet-50' },
+  AI_PARSE_FAILED:     { Icon: BrainCircuit,   color: 'text-primary',     bg: 'bg-accent' },
+  INVALID_ROUTE:       { Icon: SearchX,        color: 'text-amber-600',   bg: 'bg-amber-50' },
+  SERVICE_UNAVAILABLE: { Icon: CloudOff,       color: 'text-destructive', bg: 'bg-red-50' },
+  UNKNOWN:             { Icon: HelpCircle,     color: 'text-muted-foreground', bg: 'bg-muted' },
 };
 
 export function ErrorScreen({ error, onRetry, onBack }: Props) {
-  const { Icon, color, bgColor } = CONFIG[error.code] ?? CONFIG.UNKNOWN;
+  const { Icon, color, bg } = CONFIG[error.code] ?? CONFIG.UNKNOWN;
 
   return (
-    <Box sx={{
-      flex: 1,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: 'calc(100vh - 64px)',
-      bgcolor: 'background.default',
-    }}>
-      <Container maxWidth="xs">
-        <Box sx={{ textAlign: 'center' }}>
-          <Box sx={{
-            width: 80, height: 80, borderRadius: '50%',
-            bgcolor: bgColor,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            mx: 'auto', mb: 3,
-          }}>
-            <Icon sx={{ fontSize: 38, color }} />
-          </Box>
-
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
-            {error.message}
-          </Typography>
-
-          <Typography color="text.secondary" sx={{ fontSize: 14, mb: 4, lineHeight: 1.7 }}>
-            {error.hint}
-          </Typography>
-
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1.5, flexWrap: 'wrap' }}>
-            {error.retryable && onRetry && (
-              <Button variant="contained" onClick={onRetry}>
-                Try again
-              </Button>
-            )}
-            {onBack && (
-              <Button variant="outlined" onClick={onBack}>
-                Edit search
-              </Button>
-            )}
-          </Box>
-        </Box>
-      </Container>
-    </Box>
+    <div className="flex-1 flex items-center justify-center min-h-[calc(100vh-4rem)] bg-background">
+      <div className="max-w-sm w-full px-4 text-center">
+        <div className={`size-20 rounded-full ${bg} flex items-center justify-center mx-auto mb-6`}>
+          <Icon className={`size-9 ${color}`} />
+        </div>
+        <h2 className="font-bold text-lg mb-2">{error.message}</h2>
+        <p className="text-sm text-muted-foreground mb-8 leading-relaxed">{error.hint}</p>
+        <div className="flex justify-center gap-3 flex-wrap">
+          {error.retryable && onRetry && (
+            <Button onClick={onRetry}>Try again</Button>
+          )}
+          {onBack && (
+            <Button variant="outline" onClick={onBack}>Edit search</Button>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

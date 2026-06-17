@@ -1,9 +1,8 @@
-import { Box, Typography } from '@mui/material';
-import type { SvgIconComponent } from '@mui/icons-material';
-import { formatDate } from '../../utils';
+import { formatDate } from '@/utils';
+import type { LucideIcon } from 'lucide-react';
 
 interface Props {
-  Icon: SvgIconComponent;
+  Icon: LucideIcon;
   label: string;
   route: string;
   departure: string;
@@ -16,39 +15,31 @@ export function FlightLeg({ Icon, label, route, departure, stops }: Props) {
   const dest = parts[parts.length - 1]?.split('-')[1];
 
   return (
-    <Box sx={{ flex: 1, minWidth: 160 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-        <Icon sx={{ fontSize: 13, color: 'text.disabled' }} />
-        <Typography variant="caption" color="text.disabled"
-          sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
-          {label}
-        </Typography>
-      </Box>
+    <div className="flex-1 min-w-[160px]">
+      <div className="flex items-center gap-1 mb-1">
+        <Icon className="size-3 text-muted-foreground" />
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{label}</span>
+      </div>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Typography sx={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.5px' }}>{origin}</Typography>
+      <div className="flex items-center gap-2">
+        <span className="text-[22px] font-bold tracking-tight">{origin}</span>
 
-        <Box sx={{ flex: 1, textAlign: 'center', px: 0.5 }}>
-          <Box sx={{ position: 'relative', height: 2, bgcolor: 'divider' }}>
-            {[0, 1].map(i => (
-              <Box key={i} sx={{
-                position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-                [i === 0 ? 'left' : 'right']: 0,
-                width: 5, height: 5, borderRadius: '50%', bgcolor: 'text.disabled',
-              }} />
-            ))}
-          </Box>
-          <Typography color="text.secondary" sx={{ fontSize: 10, mt: 0.4, fontWeight: 500 }}>
+        <div className="flex-1 px-1 text-center">
+          <div className="relative h-px bg-border mx-1">
+            <span className="absolute left-0 top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-muted-foreground" />
+            <span className="absolute right-0 top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-muted-foreground" />
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-1 font-medium">
             {stops === 0 ? 'Nonstop' : `${stops} stop${stops > 1 ? 's' : ''}`}
-          </Typography>
-        </Box>
+          </p>
+        </div>
 
-        <Typography sx={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.5px' }}>{dest}</Typography>
-      </Box>
+        <span className="text-[22px] font-bold tracking-tight">{dest}</span>
+      </div>
 
       {departure && (
-        <Typography color="text.secondary" sx={{ fontSize: 12, mt: 0.3 }}>{formatDate(departure)}</Typography>
+        <p className="text-xs text-muted-foreground mt-0.5">{formatDate(departure)}</p>
       )}
-    </Box>
+    </div>
   );
 }

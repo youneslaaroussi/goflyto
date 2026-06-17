@@ -1,4 +1,4 @@
-import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { cn } from '@/lib/utils';
 
 interface Props {
   filter: 'all' | 'nonstop';
@@ -7,39 +7,49 @@ interface Props {
   onSortChange: (v: 'price' | 'stops') => void;
 }
 
-const tbSx = {
-  px: 2,
-  textTransform: 'none',
-  fontWeight: 500,
-  fontSize: 13,
-  borderRadius: '8px !important',
-  border: '1.5px solid',
-  borderColor: 'divider',
-  '&.Mui-selected': { bgcolor: 'primary.main', color: '#fff', borderColor: 'primary.main' },
-  '&.Mui-selected:hover': { bgcolor: 'primary.dark' },
-};
+function ToggleGroup<T extends string>({ value, options, onChange }: {
+  value: T;
+  options: { value: T; label: string }[];
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div className="flex rounded-lg border border-border overflow-hidden">
+      {options.map(opt => (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => onChange(opt.value)}
+          className={cn(
+            'px-3 py-1.5 text-[13px] font-medium transition-colors',
+            value === opt.value
+              ? 'bg-primary text-white'
+              : 'bg-white text-foreground hover:bg-muted',
+            'not-first:border-l border-border',
+          )}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export function ResultsFilters({ filter, sortBy, onFilterChange, onSortChange }: Props) {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, flexWrap: 'wrap', gap: 1.5 }}>
-      <ToggleButtonGroup
-        value={filter} exclusive size="small"
-        onChange={(_, v) => v && onFilterChange(v)}
-      >
-        <ToggleButton value="all" sx={tbSx}>All stops</ToggleButton>
-        <ToggleButton value="nonstop" sx={tbSx}>Nonstop only</ToggleButton>
-      </ToggleButtonGroup>
-
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Typography color="text.secondary" sx={{ fontSize: 13 }}>Sort:</Typography>
-        <ToggleButtonGroup
-          value={sortBy} exclusive size="small"
-          onChange={(_, v) => v && onSortChange(v)}
-        >
-          <ToggleButton value="price" sx={tbSx}>Price</ToggleButton>
-          <ToggleButton value="stops" sx={tbSx}>Stops</ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
-    </Box>
+    <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+      <ToggleGroup
+        value={filter}
+        options={[{ value: 'all', label: 'All stops' }, { value: 'nonstop', label: 'Nonstop only' }]}
+        onChange={onFilterChange}
+      />
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-muted-foreground">Sort:</span>
+        <ToggleGroup
+          value={sortBy}
+          options={[{ value: 'price', label: 'Price' }, { value: 'stops', label: 'Stops' }]}
+          onChange={onSortChange}
+        />
+      </div>
+    </div>
   );
 }

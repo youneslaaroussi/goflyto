@@ -1,6 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
-import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
-import BadgeIcon from '@mui/icons-material/Badge';
+import { Lightbulb, BadgeInfo } from 'lucide-react';
 
 interface Props {
   strategyNotes: string[];
@@ -11,25 +9,19 @@ export function StrategyNotes({ strategyNotes, visaNotes }: Props) {
   if (strategyNotes.length === 0 && visaNotes.length === 0) return null;
 
   return (
-    <Stack spacing={1} sx={{ mb: 2.5 }}>
+    <div className="space-y-2 mb-5">
       {strategyNotes.map((n, i) => (
-        <Box key={i} sx={{
-          display: 'flex', alignItems: 'flex-start', gap: 1,
-          p: 1.5, bgcolor: '#fffbeb', borderRadius: 2, border: '1px solid #fde68a',
-        }}>
-          <TipsAndUpdatesIcon sx={{ color: '#d97706', fontSize: 18, mt: 0.2, flexShrink: 0 }} />
-          <Typography sx={{ fontSize: 13, color: '#92400e' }}>{n}</Typography>
-        </Box>
+        <div key={i} className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+          <Lightbulb className="size-4 text-amber-600 mt-0.5 shrink-0" />
+          <p className="text-[13px] text-amber-900">{n}</p>
+        </div>
       ))}
       {visaNotes.map((n, i) => (
-        <Box key={i} sx={{
-          display: 'flex', alignItems: 'flex-start', gap: 1,
-          p: 1.5, bgcolor: '#f0f9ff', borderRadius: 2, border: '1px solid #bae6fd',
-        }}>
-          <BadgeIcon sx={{ color: '#0284c7', fontSize: 18, mt: 0.2, flexShrink: 0 }} />
-          <Typography sx={{ fontSize: 13, color: '#0c4a6e' }}>{n}</Typography>
-        </Box>
+        <div key={i} className="flex items-start gap-2 p-3 bg-sky-50 border border-sky-200 rounded-xl">
+          <BadgeInfo className="size-4 text-sky-600 mt-0.5 shrink-0" />
+          <p className="text-[13px] text-sky-900">{n}</p>
+        </div>
       ))}
-    </Stack>
+    </div>
   );
 }

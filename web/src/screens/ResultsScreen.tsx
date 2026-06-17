@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { Box, Button, Container, Skeleton, Stack, Typography } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket';
+import { ArrowLeft, Ticket } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useNavigate } from 'react-router-dom';
-import { useSearch } from '../context/SearchContext';
-import { ResultsSummary } from '../components/results/ResultsSummary';
-import { ResultsFilters } from '../components/results/ResultsFilters';
-import { FlightCard } from '../components/results/FlightCard';
-import { StrategyNotes } from '../components/results/StrategyNotes';
-import { ErrorScreen } from '../components/errors/ErrorScreen';
+import { useSearch } from '@/context/SearchContext';
+import { ResultsSummary } from '@/components/results/ResultsSummary';
+import { ResultsFilters } from '@/components/results/ResultsFilters';
+import { FlightCard } from '@/components/results/FlightCard';
+import { StrategyNotes } from '@/components/results/StrategyNotes';
+import { ErrorScreen } from '@/components/errors/ErrorScreen';
 
 export function ResultsScreen() {
   const { result, loading, appError } = useSearch();
@@ -17,33 +17,25 @@ export function ResultsScreen() {
   const [sortBy, setSortBy] = useState<'price' | 'stops'>('price');
 
   if (loading) return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Skeleton variant="rounded" height={40} sx={{ mb: 2, borderRadius: 2 }} />
-      <Stack spacing={1.5}>
-        {[...Array(6)].map((_, i) => (
-          <Skeleton key={i} variant="rounded" height={104} animation="wave" sx={{ borderRadius: 3 }} />
-        ))}
-      </Stack>
-    </Container>
+    <div className="max-w-3xl mx-auto px-4 py-6 space-y-3">
+      <Skeleton className="h-10 rounded-xl" />
+      {Array.from({ length: 6 }).map((_, i) => (
+        <Skeleton key={i} className="h-[104px] rounded-2xl" />
+      ))}
+    </div>
   );
 
   if (appError) return (
-    <ErrorScreen
-      error={appError}
-      onRetry={() => navigate('/')}
-      onBack={() => navigate('/')}
-    />
+    <ErrorScreen error={appError} onRetry={() => navigate('/')} onBack={() => navigate('/')} />
   );
 
   if (!result) return (
-    <Container maxWidth="md" sx={{ py: 4, textAlign: 'center' }}>
-      <AirplaneTicketIcon sx={{ fontSize: 52, color: 'text.disabled', mb: 2 }} />
-      <Typography sx={{ fontWeight: 600, fontSize: 16, mb: 1 }}>No results yet</Typography>
-      <Typography color="text.secondary" sx={{ fontSize: 14, mb: 3 }}>
-        Run a search first to see flights here.
-      </Typography>
-      <Button variant="contained" onClick={() => navigate('/')}>Go to search</Button>
-    </Container>
+    <div className="max-w-3xl mx-auto px-4 py-10 text-center">
+      <Ticket className="size-12 text-muted-foreground/30 mx-auto mb-4" />
+      <p className="font-semibold text-base mb-1">No results yet</p>
+      <p className="text-sm text-muted-foreground mb-6">Run a search first to see flights here.</p>
+      <Button onClick={() => navigate('/')}>Go to search</Button>
+    </div>
   );
 
   const filtered = result.offers.filter(o =>
@@ -57,46 +49,31 @@ export function ResultsScreen() {
   const cheapest = sorted[0]?.price_usd ?? 0;
 
   return (
-    <Box sx={{ flex: 1 }}>
-      <Box sx={{
-        position: 'sticky', top: 64, zIndex: 100,
-        bgcolor: 'background.default',
-        borderBottom: '1px solid', borderColor: 'divider',
-        px: { xs: 2, md: 4 }, py: 1.5,
-      }}>
-        <Box sx={{ maxWidth: 900, mx: 'auto', display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Button
-            size="small" startIcon={<ArrowBackIcon />}
-            onClick={() => navigate('/')}
-            sx={{ mr: 1, color: 'text.secondary', textTransform: 'none' }}
-          >
-            New search
+    <div className="flex-1">
+      {/* Sticky top bar */}
+      <div className="sticky top-16 z-40 bg-background border-b border-border px-4 py-2.5">
+        <div className="max-w-3xl mx-auto flex items-center gap-3">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')} className="text-muted-foreground gap-1.5 -ml-2">
+            <ArrowLeft className="size-4" /> New search
           </Button>
           <ResultsSummary result={result} />
-        </Box>
-      </Box>
+        </div>
+      </div>
 
-      <Container maxWidth="md" sx={{ py: 3 }}>
-        <StrategyNotes
-          strategyNotes={result.strategy_notes}
-          visaNotes={result.visa_notes}
-        />
-        <ResultsFilters
-          filter={filter} sortBy={sortBy}
-          onFilterChange={setFilter} onSortChange={setSortBy}
-        />
+      <div className="max-w-3xl mx-auto px-4 py-5">
+        <StrategyNotes strategyNotes={result.strategy_notes} visaNotes={result.visa_notes} />
+        <ResultsFilters filter={filter} sortBy={sortBy} onFilterChange={setFilter} onSortChange={setSortBy} />
+
         {sorted.length === 0 ? (
-          <Box sx={{ textAlign: 'center', py: 6 }}>
-            <Typography color="text.secondary">No flights match this filter.</Typography>
-          </Box>
+          <div className="text-center py-12 text-muted-foreground text-sm">No flights match this filter.</div>
         ) : (
-          <Stack spacing={1.2}>
+          <div className="space-y-3">
             {sorted.map((offer, i) => (
               <FlightCard key={offer.offer_id} offer={offer} rank={i} cheapest={cheapest} />
             ))}
-          </Stack>
+          </div>
         )}
-      </Container>
-    </Box>
+      </div>
+    </div>
   );
 }

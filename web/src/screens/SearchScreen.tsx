@@ -1,74 +1,67 @@
 import { useState } from 'react';
-import { Box, Container, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import PublicIcon from '@mui/icons-material/Public';
-import { SearchForm } from '../components/search/SearchForm';
-import { NaturalSearch } from '../components/search/NaturalSearch';
-import { ErrorScreen } from '../components/errors/ErrorScreen';
-import { useSearch } from '../context/SearchContext';
+import { Globe, Sparkles } from 'lucide-react';
+import { SearchForm } from '@/components/search/SearchForm';
+import { NaturalSearch } from '@/components/search/NaturalSearch';
+import { ErrorScreen } from '@/components/errors/ErrorScreen';
+import { useSearch } from '@/context/SearchContext';
+import { cn } from '@/lib/utils';
 
 export function SearchScreen() {
   const { appError, setAppError } = useSearch();
   const [mode, setMode] = useState<'structured' | 'natural'>('structured');
 
   if (appError) return (
-    <ErrorScreen
-      error={appError}
-      onRetry={() => setAppError(null)}
-      onBack={() => setAppError(null)}
-    />
+    <ErrorScreen error={appError} onRetry={() => setAppError(null)} onBack={() => setAppError(null)} />
   );
 
   return (
-    <Box sx={{ flex: 1 }}>
-      <Box sx={{
-        background: 'linear-gradient(135deg, #0558b8 0%, #0770e3 50%, #1a8fef 100%)',
-        pb: 6,
-      }}>
-        <Container maxWidth="md">
-          <Box sx={{ pt: 5, pb: 1 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
-              <ToggleButtonGroup
-                value={mode} exclusive
-                onChange={(_, v) => v && setMode(v)}
-                sx={{ bgcolor: 'rgba(255,255,255,0.15)', borderRadius: 2, p: '3px' }}
-              >
-                <ToggleButton value="structured" disableRipple sx={{ px: 2.5, py: 0.7, fontSize: 13 }}>
-                  Search
-                </ToggleButton>
-                <ToggleButton value="natural" disableRipple sx={{ px: 2.5, py: 0.7, fontSize: 13 }}>
-                  <AutoAwesomeIcon sx={{ fontSize: 14, mr: 0.6 }} /> Ask AI
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </Box>
+    <div className="flex-1">
+      {/* Hero */}
+      <div className="bg-gradient-to-br from-[#0558b8] via-[#0770e3] to-[#1a8fef] pb-12">
+        <div className="max-w-3xl mx-auto px-4 pt-10">
+          {/* Mode toggle */}
+          <div className="flex justify-end mb-6">
+            <div className="flex bg-white/15 rounded-xl p-1 gap-1">
+              {(['structured', 'natural'] as const).map(m => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMode(m)}
+                  className={cn(
+                    'flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-[13px] font-medium transition-colors',
+                    mode === m
+                      ? 'bg-white text-primary shadow-sm'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                  )}
+                >
+                  {m === 'natural' && <Sparkles className="size-3.5" />}
+                  {m === 'structured' ? 'Search' : 'Ask AI'}
+                </button>
+              ))}
+            </div>
+          </div>
 
-            <Typography variant="h1" sx={{ fontSize: { xs: 28, md: 40 }, color: '#fff', mb: 1.5 }}>
-              {mode === 'natural'
-                ? 'Just tell us where you want to go'
-                : 'The cheapest way to get there'}
-            </Typography>
-            <Typography sx={{ color: 'rgba(255,255,255,0.8)', fontSize: 16, mb: 4, maxWidth: 480 }}>
-              {mode === 'natural'
-                ? "Describe your trip in plain English — we'll find the optimal route, dates and strategy."
-                : "We sweep every date combo and open-jaw route so you don't have to."}
-            </Typography>
+          <h1 className="text-[clamp(26px,5vw,40px)] font-bold text-white tracking-tight mb-3 leading-tight">
+            {mode === 'natural' ? 'Just tell us where you want to go' : 'The cheapest way to get there'}
+          </h1>
+          <p className="text-white/80 text-base mb-8 max-w-lg">
+            {mode === 'natural'
+              ? "Describe your trip in plain English — we'll find the optimal route, dates and strategy."
+              : "We sweep every date combo and open-jaw route so you don't have to."}
+          </p>
 
-            {mode === 'natural' ? <NaturalSearch /> : <SearchForm />}
-          </Box>
-        </Container>
-      </Box>
+          {mode === 'natural' ? <NaturalSearch /> : <SearchForm />}
+        </div>
+      </div>
 
-      <Container maxWidth="md" sx={{ py: 3 }}>
-        <Box sx={{ textAlign: 'center', py: 6, color: 'text.secondary' }}>
-          <PublicIcon sx={{ fontSize: 52, color: 'primary.light', mb: 1.5 }} />
-          <Typography color="text.primary" sx={{ fontWeight: 600, fontSize: 16, mb: 0.5 }}>
-            Ready to find your flight
-          </Typography>
-          <Typography sx={{ fontSize: 14 }}>
-            Enter your trip details above. Results will appear in the Results screen.
-          </Typography>
-        </Box>
-      </Container>
-    </Box>
+      {/* Empty state */}
+      <div className="max-w-3xl mx-auto px-4 py-10">
+        <div className="flex flex-col items-center text-center py-12">
+          <Globe className="size-12 text-primary/30 mb-4" />
+          <p className="font-semibold text-[16px] mb-1">Ready to find your flight</p>
+          <p className="text-sm text-muted-foreground">Enter your trip details above. Results will appear in the Results screen.</p>
+        </div>
+      </div>
+    </div>
   );
 }

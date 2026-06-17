@@ -1,5 +1,5 @@
-import { Box, Chip, Typography } from '@mui/material';
-import type { SearchResult } from '../../types';
+import { Badge } from '@/components/ui/badge';
+import type { SearchResult } from '@/types';
 
 interface Props { result: SearchResult; }
 
@@ -10,31 +10,21 @@ export function ResultsSummary({ result }: Props) {
   const cheapestNonstop = nonstopOffers[0]?.price_usd;
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, flexWrap: 'wrap', gap: 1 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-        <Typography sx={{ fontWeight: 700, fontSize: 16 }}>{offers.length} flights found</Typography>
+    <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+      <div className="flex items-center gap-3">
+        <span className="font-bold text-base">{offers.length} flights found</span>
         {constraints.origin && constraints.destination && (
-          <Chip
-            label={`${constraints.origin} → ${constraints.destination}`}
-            size="small" variant="outlined"
-          />
+          <Badge variant="outline">{constraints.origin} → {constraints.destination}</Badge>
         )}
-      </Box>
-
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      </div>
+      <div className="flex items-center gap-3">
         {cheapestNonstop && cheapestNonstop > cheapest && (
-          <Chip
-            label={`Nonstop from $${cheapestNonstop.toFixed(0)}`}
-            size="small" color="secondary" variant="outlined"
-          />
+          <Badge variant="secondary">Nonstop from ${cheapestNonstop.toFixed(0)}</Badge>
         )}
-        <Typography color="text.secondary" sx={{ fontWeight: 500, fontSize: 14 }}>
-          From{' '}
-          <Box component="span" sx={{ fontWeight: 700, color: 'primary.main', fontSize: 18 }}>
-            ${cheapest.toFixed(0)}
-          </Box>
-        </Typography>
-      </Box>
-    </Box>
+        <span className="text-sm text-muted-foreground font-medium">
+          From <span className="font-bold text-primary text-lg">${cheapest.toFixed(0)}</span>
+        </span>
+      </div>
+    </div>
   );
 }

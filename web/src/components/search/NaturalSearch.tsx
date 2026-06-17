@@ -1,10 +1,11 @@
 import { useState, type KeyboardEvent } from 'react';
-import { Box, Button, Card, CardContent, Chip, Stack, TextField, Typography } from '@mui/material';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import { searchNatural } from '../../api';
-import { useSearch } from '../../context/SearchContext';
+import { Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { searchNatural } from '@/api';
+import { useSearch } from '@/context/SearchContext';
 import { useNavigate } from 'react-router-dom';
-import { runWithSteps } from '../../searchSteps';
+import { runWithSteps } from '@/searchSteps';
 
 const EXAMPLES = [
   'Montreal to Morocco late July, 2 weeks',
@@ -24,58 +25,48 @@ export function NaturalSearch() {
     navigate(ctx.appError ? '/ai' : '/results');
   }
 
-  function handleKey(e: KeyboardEvent<HTMLDivElement>) {
+  function handleKey(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); }
   }
 
   return (
-    <Stack spacing={1.5}>
-      <Card elevation={3} sx={{ borderRadius: 3 }}>
-        <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
-          <TextField
-            fullWidth multiline rows={3} autoFocus
-            placeholder="e.g. I want to fly from Montreal to Morocco in late July for about 2 weeks..."
-            value={message}
-            onChange={e => setMessage(e.target.value)}
-            onKeyDown={handleKey}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '12px 12px 0 0',
-                fontSize: 16,
-                '& fieldset': { border: 'none' },
-              },
-            }}
-          />
-          <Box sx={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            px: 2, py: 1.5, borderTop: '1px solid', borderColor: 'divider',
-          }}>
-            <Typography variant="caption" color="text.secondary">
-              Enter to search · Shift+Enter for new line
-            </Typography>
-            <Button
-              variant="contained" onClick={submit} disabled={!message.trim()}
-              startIcon={<AutoAwesomeIcon />} sx={{ borderRadius: 2 }}
-            >
-              Find flights
-            </Button>
-          </Box>
-        </CardContent>
-      </Card>
+    <div className="space-y-3">
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <textarea
+          autoFocus
+          rows={3}
+          placeholder="e.g. I want to fly from Montreal to Morocco in late July for about 2 weeks..."
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+          onKeyDown={handleKey}
+          className="w-full resize-none px-4 pt-4 pb-2 text-base outline-none placeholder:text-muted-foreground/60 font-sans"
+        />
+        <div className="flex items-center justify-between px-4 py-3 border-t border-border">
+          <span className="text-xs text-muted-foreground">Enter to search · Shift+Enter for new line</span>
+          <Button onClick={submit} disabled={!message.trim()} size="sm">
+            <Sparkles className="size-3.5 mr-1.5" />
+            Find flights
+          </Button>
+        </div>
+      </div>
 
-      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+      <div className="flex flex-wrap gap-2">
         {EXAMPLES.map(ex => (
-          <Chip key={ex} label={ex} onClick={() => setMessage(ex)} clickable
-            sx={{
-              bgcolor: 'rgba(255,255,255,0.15)',
-              color: 'rgba(255,255,255,0.9)',
-              border: '1px solid rgba(255,255,255,0.25)',
-              fontSize: 12,
-              '&:hover': { bgcolor: 'rgba(255,255,255,0.25)' },
-            }}
-          />
+          <button
+            key={ex}
+            type="button"
+            onClick={() => setMessage(ex)}
+            className="inline-flex"
+          >
+            <Badge
+              variant="outline"
+              className="cursor-pointer text-[11px] font-normal bg-white/15 text-white/90 border-white/25 hover:bg-white/25 transition-colors"
+            >
+              {ex}
+            </Badge>
+          </button>
         ))}
-      </Stack>
-    </Stack>
+      </div>
+    </div>
   );
 }

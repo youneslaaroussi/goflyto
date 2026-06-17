@@ -23,3 +23,5 @@ web/dist/
 # Misc
 *.log
 .DS_Store
+web-next/
+logs/

@@ -1,41 +1,30 @@
-import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import { Plane, Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
   onMenuClick: () => void;
-  drawerWidth: number;
 }
 
-export function TopBar({ onMenuClick, drawerWidth }: Props) {
+export function TopBar({ onMenuClick }: Props) {
   const navigate = useNavigate();
 
   return (
-    <AppBar
-      position="fixed"
-      elevation={0}
-      sx={{
-        width: { md: `calc(100% - ${drawerWidth}px)` },
-        ml: { md: `${drawerWidth}px` },
-        bgcolor: 'white',
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-        color: 'text.primary',
-      }}
-    >
-      <Toolbar>
-        <IconButton edge="start" onClick={onMenuClick} sx={{ mr: 2, display: { md: 'none' } }}>
-          <MenuIcon />
-        </IconButton>
-        <Box
-          onClick={() => navigate('/')}
-          sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}
-        >
-          <FlightTakeoffIcon color="primary" />
-          <Typography sx={{ fontWeight: 700, fontSize: 18, letterSpacing: '-0.3px' }}>GoFlyTo</Typography>
-        </Box>
-      </Toolbar>
-    </AppBar>
+    <header className="fixed top-0 right-0 left-0 z-50 h-16 bg-white border-b border-border flex items-center px-4 md:pl-[calc(240px+1rem)]">
+      <Button
+        variant="ghost" size="icon"
+        className="md:hidden mr-2"
+        onClick={onMenuClick}
+      >
+        <Menu className="size-5" />
+      </Button>
+      <button
+        onClick={() => navigate('/')}
+        className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+      >
+        <Plane className="size-5 text-primary" />
+        <span className="font-bold text-[18px] tracking-tight">GoFlyTo</span>
+      </button>
+    </header>
   );
 }

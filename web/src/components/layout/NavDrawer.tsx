@@ -1,28 +1,27 @@
-import type React from 'react';
-import {
-  Box, Divider, Drawer, List, ListItem, ListItemButton,
-  ListItemIcon, ListItemText, Typography, Chip,
-} from '@mui/material';
-import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
-import SearchIcon from '@mui/icons-material/Search';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import HourglassTopIcon from '@mui/icons-material/HourglassTop';
+import { Plane, Search, List, Sparkles, TrendingDown, Hourglass } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useSearch } from '../../context/SearchContext';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { useSearch } from '@/context/SearchContext';
+import { cn } from '@/lib/utils';
+import type { ReactNode } from 'react';
 
-interface Props {
-  width: number;
-  mobileOpen: boolean;
-  onClose: () => void;
+const DRAWER_WIDTH = 240;
+
+interface NavItem {
+  label: string;
+  icon: ReactNode;
+  path: string;
+  requiresResult?: true;
+  requiresLoading?: true;
 }
 
-const NAV_ITEMS: { label: string; icon: React.ReactNode; path: string; requiresResult?: true; requiresLoading?: true }[] = [
-  { label: 'Search', icon: <SearchIcon />, path: '/' },
-  { label: 'Searching…', icon: <HourglassTopIcon />, path: '/searching', requiresLoading: true },
-  { label: 'Results', icon: <ListAltIcon />, path: '/results', requiresResult: true },
-  { label: 'Ask AI', icon: <AutoAwesomeIcon />, path: '/ai' },
+const NAV_ITEMS: NavItem[] = [
+  { label: 'Search', icon: <Search className="size-4" />, path: '/' },
+  { label: 'Searching…', icon: <Hourglass className="size-4" />, path: '/searching', requiresLoading: true },
+  { label: 'Results', icon: <List className="size-4" />, path: '/results', requiresResult: true },
+  { label: 'Ask AI', icon: <Sparkles className="size-4" />, path: '/ai' },
 ];
 
 function DrawerContent() {
@@ -31,102 +30,96 @@ function DrawerContent() {
   const { result, loading } = useSearch();
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div className="flex flex-col h-full">
       {/* Logo */}
-      <Box sx={{ p: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
-        <Box sx={{
-          width: 36, height: 36, borderRadius: 2,
-          bgcolor: 'primary.main', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <FlightTakeoffIcon sx={{ color: '#fff', fontSize: 20 }} />
-        </Box>
-        <Box>
-          <Typography sx={{ fontWeight: 700, fontSize: 16, letterSpacing: '-0.3px', lineHeight: 1 }}>GoFlyTo</Typography>
-          <Typography color="text.secondary" sx={{ fontSize: 11 }}>Flight Optimizer</Typography>
-        </Box>
-      </Box>
+      <div className="flex items-center gap-3 p-5">
+        <div className="size-9 rounded-xl bg-primary flex items-center justify-center shrink-0">
+          <Plane className="size-5 text-white" />
+        </div>
+        <div>
+          <div className="font-bold text-[15px] tracking-tight leading-none">GoFlyTo</div>
+          <div className="text-[11px] text-muted-foreground mt-0.5">Flight Optimizer</div>
+        </div>
+      </div>
 
-      <Divider />
+      <Separator />
 
       {/* Nav */}
-      <List sx={{ px: 1.5, pt: 1.5, flex: 1 }}>
-        <Typography variant="overline" sx={{ px: 1, color: 'text.disabled', fontSize: 10 }}>
+      <nav className="flex-1 px-3 pt-3 space-y-0.5">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground px-2 mb-2">
           Navigation
-        </Typography>
+        </p>
         {NAV_ITEMS.map(item => {
-          const disabled = (item.requiresResult && !result) || (item.requiresLoading && !loading);
           if (item.requiresLoading && !loading) return null;
           const active = location.pathname === item.path;
+          const disabled = (item.requiresResult && !result) || (item.requiresLoading && !loading);
           return (
-            <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
-              <ListItemButton
-                disabled={disabled}
-                onClick={() => navigate(item.path)}
-                sx={{
-                  borderRadius: 2,
-                  bgcolor: active ? 'primary.light' : 'transparent',
-                  color: active ? 'primary.main' : 'text.primary',
-                  '&:hover': { bgcolor: active ? 'primary.light' : 'action.hover' },
-                  '& .MuiListItemIcon-root': { color: active ? 'primary.main' : 'text.secondary', minWidth: 38 },
-                }}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  slotProps={{ primary: { sx: { fontSize: 14, fontWeight: active ? 600 : 400 } } }}
-                />
-                {item.requiresResult && result && (
-                  <Chip
-                    label={result.offers.length}
-                    size="small"
-                    color="primary"
-                    sx={{ height: 20, fontSize: 11 }}
-                  />
-                )}
-              </ListItemButton>
-            </ListItem>
+            <button
+              key={item.path}
+              disabled={!!disabled}
+              onClick={() => navigate(item.path)}
+              className={cn(
+                'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                active
+                  ? 'bg-accent text-primary'
+                  : 'text-foreground hover:bg-muted',
+                disabled && 'opacity-40 pointer-events-none',
+              )}
+            >
+              <span className={cn('shrink-0', active ? 'text-primary' : 'text-muted-foreground')}>
+                {item.icon}
+              </span>
+              <span className="flex-1 text-left">{item.label}</span>
+              {item.requiresResult && result && (
+                <Badge variant="default" className="h-5 text-[11px] px-1.5">
+                  {result.offers.length}
+                </Badge>
+              )}
+            </button>
           );
         })}
-      </List>
+      </nav>
 
-      <Divider />
+      <Separator />
 
-      {/* Footer */}
-      <Box sx={{ p: 2 }}>
-        <Box sx={{ bgcolor: 'primary.light', borderRadius: 2, p: 1.5 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-            <TrendingDownIcon sx={{ color: 'primary.main', fontSize: 16 }} />
-            <Typography color="primary.main" sx={{ fontSize: 12, fontWeight: 600 }}>Pro tip</Typography>
-          </Box>
-          <Typography color="text.secondary" sx={{ fontSize: 11, lineHeight: 1.5 }}>
+      {/* Pro tip */}
+      <div className="p-3">
+        <div className="bg-accent rounded-xl p-3">
+          <div className="flex items-center gap-1.5 mb-1">
+            <TrendingDown className="size-3.5 text-primary" />
+            <span className="text-[12px] font-semibold text-primary">Pro tip</span>
+          </div>
+          <p className="text-[11px] text-muted-foreground leading-relaxed">
             Open-jaw routing (fly into one city, out of another) often saves 10–20%.
-          </Typography>
-        </Box>
-      </Box>
-    </Box>
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 
-export function NavDrawer({ width, mobileOpen, onClose }: Props) {
-  const drawerSx = { width, flexShrink: 0, '& .MuiDrawer-paper': { width, boxSizing: 'border-box', border: 'none', borderRight: '1px solid', borderColor: 'divider' } };
+interface Props {
+  mobileOpen: boolean;
+  onClose: () => void;
+}
 
+export function NavDrawer({ mobileOpen, onClose }: Props) {
   return (
-    <Box component="nav" sx={{ width: { md: width }, flexShrink: { md: 0 } }}>
-      {/* Mobile */}
-      <Drawer variant="temporary" open={mobileOpen} onClose={onClose}
-        ModalProps={{ keepMounted: true }}
-        sx={{ display: { xs: 'block', md: 'none' }, ...drawerSx }}
-      >
-        <DrawerContent />
-      </Drawer>
+    <>
+      {/* Mobile: Sheet */}
+      <Sheet open={mobileOpen} onOpenChange={open => !open && onClose()}>
+        <SheetContent side="left" className="p-0 w-[240px]">
+          <DrawerContent />
+        </SheetContent>
+      </Sheet>
 
-      {/* Desktop */}
-      <Drawer variant="permanent"
-        sx={{ display: { xs: 'none', md: 'block' }, ...drawerSx }}
-        open
+      {/* Desktop: fixed sidebar */}
+      <aside
+        className="hidden md:flex flex-col fixed inset-y-0 left-0 z-40 border-r border-border bg-white"
+        style={{ width: DRAWER_WIDTH }}
       >
         <DrawerContent />
-      </Drawer>
-    </Box>
+      </aside>
+    </>
   );
 }
