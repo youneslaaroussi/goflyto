@@ -10,7 +10,7 @@ export function SearchingScreen() {
   const currentStep = steps.find(s => !s.done);
 
   return (
-    <div className="flex-1 flex items-center justify-center min-h-[calc(100vh-4rem)] bg-gradient-to-b from-[#f0f6ff] to-background">
+    <div className="flex-1 flex items-center justify-center min-h-[calc(100vh-4rem)] bg-background">
       <div className="max-w-xs w-full px-4 text-center">
         {/* Pulsing plane */}
         <div className="relative mx-auto size-20 mb-6">

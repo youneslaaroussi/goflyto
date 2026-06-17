@@ -31,7 +31,7 @@ export function NaturalSearch() {
 
   return (
     <div className="space-y-3">
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
         <textarea
           autoFocus
           rows={3}
@@ -39,7 +39,7 @@ export function NaturalSearch() {
           value={message}
           onChange={e => setMessage(e.target.value)}
           onKeyDown={handleKey}
-          className="w-full resize-none px-4 pt-4 pb-2 text-base outline-none placeholder:text-muted-foreground/60 font-sans"
+          className="w-full resize-none px-4 pt-4 pb-2 text-base outline-none bg-transparent placeholder:text-muted-foreground/50 font-sans text-foreground"
         />
         <div className="flex items-center justify-between px-4 py-3 border-t border-border">
           <span className="text-xs text-muted-foreground">Enter to search · Shift+Enter for new line</span>
@@ -60,7 +60,7 @@ export function NaturalSearch() {
           >
             <Badge
               variant="outline"
-              className="cursor-pointer text-[11px] font-normal bg-white/15 text-white/90 border-white/25 hover:bg-white/25 transition-colors"
+              className="cursor-pointer text-[11px] font-normal text-muted-foreground border-border hover:border-primary/50 hover:text-foreground transition-colors"
             >
               {ex}
             </Badge>

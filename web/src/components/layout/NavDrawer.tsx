@@ -115,7 +115,7 @@ export function NavDrawer({ mobileOpen, onClose }: Props) {
 
       {/* Desktop: fixed sidebar */}
       <aside
-        className="hidden md:flex flex-col fixed inset-y-0 left-0 z-40 border-r border-border bg-white"
+        className="hidden md:flex flex-col fixed inset-y-0 left-0 z-40 border-r border-border bg-sidebar"
         style={{ width: DRAWER_WIDTH }}
       >
         <DrawerContent />

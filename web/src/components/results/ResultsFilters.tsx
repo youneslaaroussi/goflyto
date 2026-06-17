@@ -22,8 +22,8 @@ function ToggleGroup<T extends string>({ value, options, onChange }: {
           className={cn(
             'px-3 py-1.5 text-[13px] font-medium transition-colors',
             value === opt.value
-              ? 'bg-primary text-white'
-              : 'bg-white text-foreground hover:bg-muted',
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted',
             'not-first:border-l border-border',
           )}
         >

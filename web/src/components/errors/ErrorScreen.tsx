@@ -9,26 +9,26 @@ interface Props {
   onBack?: () => void;
 }
 
-const CONFIG: Record<AppErrorCode, { Icon: LucideIcon; color: string; bg: string }> = {
-  NO_FLIGHTS_FOUND:    { Icon: PlaneTakeoff,  color: 'text-primary',     bg: 'bg-accent' },
-  NETWORK_OFFLINE:     { Icon: WifiOff,        color: 'text-amber-600',   bg: 'bg-amber-50' },
-  SEARCH_TIMEOUT:      { Icon: TimerOff,       color: 'text-violet-600',  bg: 'bg-violet-50' },
-  AI_PARSE_FAILED:     { Icon: BrainCircuit,   color: 'text-primary',     bg: 'bg-accent' },
-  INVALID_ROUTE:       { Icon: SearchX,        color: 'text-amber-600',   bg: 'bg-amber-50' },
-  SERVICE_UNAVAILABLE: { Icon: CloudOff,       color: 'text-destructive', bg: 'bg-red-50' },
-  UNKNOWN:             { Icon: HelpCircle,     color: 'text-muted-foreground', bg: 'bg-muted' },
+const CONFIG: Record<AppErrorCode, { Icon: LucideIcon; color: string }> = {
+  NO_FLIGHTS_FOUND:    { Icon: PlaneTakeoff,  color: 'text-primary' },
+  NETWORK_OFFLINE:     { Icon: WifiOff,        color: 'text-muted-foreground' },
+  SEARCH_TIMEOUT:      { Icon: TimerOff,       color: 'text-primary' },
+  AI_PARSE_FAILED:     { Icon: BrainCircuit,   color: 'text-primary' },
+  INVALID_ROUTE:       { Icon: SearchX,        color: 'text-muted-foreground' },
+  SERVICE_UNAVAILABLE: { Icon: CloudOff,       color: 'text-destructive' },
+  UNKNOWN:             { Icon: HelpCircle,     color: 'text-muted-foreground' },
 };
 
 export function ErrorScreen({ error, onRetry, onBack }: Props) {
-  const { Icon, color, bg } = CONFIG[error.code] ?? CONFIG.UNKNOWN;
+  const { Icon, color } = CONFIG[error.code] ?? CONFIG.UNKNOWN;
 
   return (
     <div className="flex-1 flex items-center justify-center min-h-[calc(100vh-4rem)] bg-background">
       <div className="max-w-sm w-full px-4 text-center">
-        <div className={`size-20 rounded-full ${bg} flex items-center justify-center mx-auto mb-6`}>
-          <Icon className={`size-9 ${color}`} />
+        <div className="size-16 rounded-2xl bg-card border border-border flex items-center justify-center mx-auto mb-6">
+          <Icon className={`size-7 ${color}`} />
         </div>
-        <h2 className="font-bold text-lg mb-2">{error.message}</h2>
+        <h2 className="font-semibold text-lg mb-2">{error.message}</h2>
         <p className="text-sm text-muted-foreground mb-8 leading-relaxed">{error.hint}</p>
         <div className="flex justify-center gap-3 flex-wrap">
           {error.retryable && onRetry && (

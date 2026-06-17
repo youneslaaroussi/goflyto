@@ -44,7 +44,7 @@ export function SearchForm() {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-5">
+    <div className="bg-card border border-border rounded-xl p-5">
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Origin / Destination */}
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] gap-3">

@@ -76,7 +76,7 @@ function AirportDropdown({
         <ChevronsUpDown className="size-3.5 shrink-0 opacity-50 ml-1" />
       </Button>
       {open && (
-        <div className="absolute z-50 mt-1 w-full min-w-[220px] rounded-lg border border-border bg-white shadow-lg overflow-hidden">
+        <div className="absolute z-50 mt-1 w-full min-w-[220px] rounded-lg border border-border bg-popover shadow-lg overflow-hidden">
           <div className="max-h-60 overflow-y-auto py-1">
             {children}
           </div>

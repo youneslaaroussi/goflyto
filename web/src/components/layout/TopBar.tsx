@@ -10,7 +10,7 @@ export function TopBar({ onMenuClick }: Props) {
   const navigate = useNavigate();
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 h-16 bg-white border-b border-border flex items-center px-4 md:pl-[calc(240px+1rem)]">
+    <header className="fixed top-0 right-0 left-0 z-50 h-16 bg-background border-b border-border flex items-center px-4 md:pl-[calc(240px+1rem)]">
       <Button
         variant="ghost" size="icon"
         className="md:hidden mr-2"

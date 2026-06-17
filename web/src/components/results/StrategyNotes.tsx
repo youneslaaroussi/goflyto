@@ -11,15 +11,15 @@ export function StrategyNotes({ strategyNotes, visaNotes }: Props) {
   return (
     <div className="space-y-2 mb-5">
       {strategyNotes.map((n, i) => (
-        <div key={i} className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl">
-          <Lightbulb className="size-4 text-amber-600 mt-0.5 shrink-0" />
-          <p className="text-[13px] text-amber-900">{n}</p>
+        <div key={i} className="flex items-start gap-2 p-3 bg-card border border-border rounded-xl">
+          <Lightbulb className="size-4 text-primary mt-0.5 shrink-0" />
+          <p className="text-[13px] text-foreground">{n}</p>
         </div>
       ))}
       {visaNotes.map((n, i) => (
-        <div key={i} className="flex items-start gap-2 p-3 bg-sky-50 border border-sky-200 rounded-xl">
-          <BadgeInfo className="size-4 text-sky-600 mt-0.5 shrink-0" />
-          <p className="text-[13px] text-sky-900">{n}</p>
+        <div key={i} className="flex items-start gap-2 p-3 bg-card border border-border rounded-xl">
+          <BadgeInfo className="size-4 text-muted-foreground mt-0.5 shrink-0" />
+          <p className="text-[13px] text-muted-foreground">{n}</p>
         </div>
       ))}
     </div>

@@ -21,8 +21,8 @@ export function FlightCard({ offer, rank, cheapest }: Props) {
 
   return (
     <div className={cn(
-      'relative rounded-2xl border bg-white transition-all duration-150',
-      isBest ? 'border-primary shadow-[0_4px_16px_rgba(7,112,227,0.15)]' : 'border-border hover:border-primary hover:shadow-[0_4px_16px_rgba(7,112,227,0.10)] hover:-translate-y-px',
+      'relative rounded-xl border bg-card transition-all duration-150',
+      isBest ? 'border-primary/60' : 'border-border hover:border-primary/40 hover:-translate-y-px',
     )}>
       {isBest && (
         <span className="absolute top-0 left-5 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-b-md">
